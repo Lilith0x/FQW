@@ -1,0 +1,6 @@
+*.docx
+*.doc
+.idea
+*.cpython-38
+*.pyc
+__pycache__
