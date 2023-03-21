@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="icon">
+    <file>micro.png</file>
+    <file>strelka.png</file>
+  </qresource>
+</RCC>
