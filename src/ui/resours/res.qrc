@@ -1,6 +1,8 @@
 <RCC>
-  <qresource prefix="icon">
-    <file>micro.png</file>
-    <file>strelka.png</file>
+  <qresource prefix="newPrefix">
+    <file>коробки/pngwing.com (2).png</file>
+    <file>коробки/pngwing.com (3).png</file>
+    <file>коробки/pngwing.com (4).png</file>
+    <file>коробки/pngwing.com.png</file>
   </qresource>
 </RCC>
