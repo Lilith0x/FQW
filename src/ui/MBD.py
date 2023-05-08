@@ -10,9 +10,8 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton.clicked.connect(self.send)
 
     def send(self):
-        self.textBrowser.append(self.textEdit.toPlainText())
-        self.textEdit.repaint()
-
+        self.textBrowser.append(self.textEdit.toPlainText() + "\n")
+        self.textEdit.clear()
 
 
 if __name__ == "__main__":
