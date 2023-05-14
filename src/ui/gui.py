@@ -91,6 +91,7 @@ class Ui_Form(object):
 
     def voice_processing(self, text):
         self.execute_cmd(text)
+        # print(text)
 
     def enter_input(self):
         self.pushButton_3.setEnabled(False)
