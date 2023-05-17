@@ -102,8 +102,8 @@ if __name__ == "__main__":
     self.setAttribute(Qt.WA_TranslucentBackground, True)
 
     # геометрия самого окна
-    MainWindow.setGeometry(QtCore.QRect(60, 560, 540, 800))
-
+    MainWindow.setGeometry(QtCore.QRect(60, 145, 540, 1220))
+    MainWindow.setFixedSize(540, 1220)
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
