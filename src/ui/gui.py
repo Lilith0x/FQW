@@ -13,7 +13,7 @@ from num2t4ru import num2text
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from functions import speak, voice
+from functions import voice_assistant, voice_input
 
 
 class Ui_Form(object):
@@ -85,8 +85,8 @@ class Ui_Form(object):
 
     def voice_input(self):
         self.pushButton_2.setEnabled(False)
-        speak.va_speak('Говорите')
-        voice.va_listen(self.voice_processing)
+        voice_assistant.va_speak('Говорите')
+        voice_input.va_listen(self.voice_processing)
         self.pushButton_2.setEnabled(True)
 
     def voice_processing(self, text):
@@ -124,15 +124,15 @@ class Ui_Form(object):
             text += "произносить какое сейчас время ..."
             text += "вывести информацию о системе ..."
             text += "и открыть браузер"
-            speak.va_speak(text)
+            voice_assistant.va_speak(text)
 
         elif rc['command'] == 'ctime':
             now = datetime.datetime.now()
             text = "Сейчас " + num2text(now.hour) + " " + num2text(now.minute)
-            speak.va_speak(text)
+            voice_assistant.va_speak(text)
 
         elif rc['command'] == 'system':
-            speak.va_speak("Вывожу информацию о системе в консоль")
+            voice_assistant.va_speak("Вывожу информацию о системе в консоль")
             sys = platform.uname()
             print("Информация о системе:\n" \
                   f"    Имя системы/OS - {sys[0]}\n" \
@@ -143,16 +143,16 @@ class Ui_Form(object):
                   f"    Имя процессора - {sys[5]}")
 
         elif rc['command'] == 'open_browser':
-            speak.va_speak("Открываю браузер")
+            voice_assistant.va_speak("Открываю браузер")
             url = "https://ya.ru/"
             webbrowser.open(url)
 
         elif rc['command'] == 'dontknow':
             if 'скажи' in command:
                 command = command.replace('скажи', "").strip()
-                speak.va_speak(command)
+                voice_assistant.va_speak(command)
             else:
-                speak.va_speak("Я не знаю такой команды")
+                voice_assistant.va_speak("Я не знаю такой команды")
 
 # import resours.res_rs
 

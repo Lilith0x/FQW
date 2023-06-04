@@ -42,9 +42,9 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         self.centralwidget.setFont(font)
         self.centralwidget.setStyleSheet("border-color: rgb(73, 77, 78);\n"
-"color: rgb(255, 215, 0);\n"
-"\n"
-"")
+                                         "color: rgb(255, 215, 0);\n"
+                                         "\n"
+                                         "")
 
         # Натройка визуала самого окна, прозрачноть и т д
         self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
@@ -66,31 +66,31 @@ class Ui_MainWindow(object):
         self.tabWidget.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.tabWidget.setAutoFillBackground(False)
         self.tabWidget.setStyleSheet("QTabWidget::pane\n"
-"{\n"
-"    border:1px;\n"
-"    background:rgb(73, 77, 78);\n"
-"\n"
-"\n"
-"}\n"
-"\n"
-"QTabBar::tab\n"
-"{\n"
-"    background:rgb(128, 128, 128);\n"
-"    min-width: 4ex;\n"
-"    min-height: 35ex;\n"
-"    margin-top: 1px;\n"
-"    \n"
-"    color: rgb(255, 215, 0);\n"
-"\n"
-"}\n"
-"\n"
-"QTabBar::tab::selected\n"
-"{\n"
-"    background:rgb(73, 77, 78);\n"
-"}\n"
-"\n"
-"\n"
-"")
+                                     "{\n"
+                                     "    border:1px;\n"
+                                     "    background:rgb(73, 77, 78);\n"
+                                     "\n"
+                                     "\n"
+                                     "}\n"
+                                     "\n"
+                                     "QTabBar::tab\n"
+                                     "{\n"
+                                     "    background:rgb(128, 128, 128);\n"
+                                     "    min-width: 4ex;\n"
+                                     "    min-height: 35ex;\n"
+                                     "    margin-top: 1px;\n"
+                                     "    \n"
+                                     "    color: rgb(255, 215, 0);\n"
+                                     "\n"
+                                     "}\n"
+                                     "\n"
+                                     "QTabBar::tab::selected\n"
+                                     "{\n"
+                                     "    background:rgb(73, 77, 78);\n"
+                                     "}\n"
+                                     "\n"
+                                     "\n"
+                                     "")
         self.tabWidget.setTabPosition(QtWidgets.QTabWidget.West)
         self.tabWidget.setTabShape(QtWidgets.QTabWidget.Rounded)
         self.tabWidget.setElideMode(QtCore.Qt.ElideNone)
@@ -103,11 +103,11 @@ class Ui_MainWindow(object):
         self.tab_1 = QtWidgets.QWidget()
         self.tab_1.setAutoFillBackground(False)
         self.tab_1.setStyleSheet("background-color: rgb(73, 77, 78);\n"
-"border-color: rgb(255, 0, 0);\n"
-"alternate-background-color: rgb(255, 0, 0);\n"
-"\n"
-"\n"
-"")
+                                 "border-color: rgb(255, 0, 0);\n"
+                                 "alternate-background-color: rgb(255, 0, 0);\n"
+                                 "\n"
+                                 "\n"
+                                 "")
         self.tab_1.setObjectName("tab_1")
         self.textBrowser = QtWidgets.QTextBrowser(self.tab_1)
         self.textBrowser.setGeometry(QtCore.QRect(6, 15, 500, 661))
@@ -116,8 +116,8 @@ class Ui_MainWindow(object):
         self.textBrowser.setFont(font)
         self.textBrowser.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.textBrowser.setStyleSheet("color:rgb(255, 215, 0);\n"
-"background-color: rgb(73, 77, 78);\n"
-"")
+                                       "background-color: rgb(73, 77, 78);\n"
+                                       "")
         self.textBrowser.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.textBrowser.setObjectName("textBrowser")
         self.frame = QtWidgets.QFrame(self.tab_1)
@@ -154,7 +154,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.setAcceptDrops(False)
         self.pushButton_2.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.pushButton_2.setStyleSheet("background-color: rgb(73, 77, 78);\n"
-"color: rgb(255, 215, 0);")
+                                        "color: rgb(255, 215, 0);")
         self.pushButton_2.setText("")
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap("resours/micro.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -173,7 +173,7 @@ class Ui_MainWindow(object):
         self.pushButton.setGeometry(QtCore.QRect(380, 0, 60, 70))
         self.pushButton.setFocusPolicy(QtCore.Qt.NoFocus)
         self.pushButton.setStyleSheet("background-color: rgb(73, 77, 78);\n"
-"color: rgb(255, 215, 0);")
+                                      "color: rgb(255, 215, 0);")
         self.pushButton.setText("")
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap("resours/strelka.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -193,7 +193,7 @@ class Ui_MainWindow(object):
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setAutoFillBackground(False)
         self.tab_2.setStyleSheet("background-color: rgb(73, 77, 78);\n"
-"")
+                                 "")
         self.tab_2.setObjectName("tab_2")
         self.label_5 = QtWidgets.QLabel(self.tab_2)
         self.label_5.setGeometry(QtCore.QRect(20, 60, 481, 31))
@@ -216,11 +216,11 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.lineEdit.setFont(font)
         self.lineEdit.setStyleSheet("background-color: rgb(128, 128, 128);\n"
-"")
+                                    "")
         self.lineEdit.setObjectName("lineEdit")
         self.buttonBox_2 = QtWidgets.QDialogButtonBox(self.tab_2)
         self.buttonBox_2.setGeometry(QtCore.QRect(350, 150, 156, 51))
-        self.buttonBox_2.setStandardButtons(QtWidgets.QDialogButtonBox.Apply|QtWidgets.QDialogButtonBox.Reset)
+        self.buttonBox_2.setStandardButtons(QtWidgets.QDialogButtonBox.Apply | QtWidgets.QDialogButtonBox.Reset)
         self.buttonBox_2.setCenterButtons(False)
         self.buttonBox_2.setObjectName("buttonBox_2")
         self.lineEdit_2 = QtWidgets.QLineEdit(self.tab_2)
@@ -231,7 +231,7 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.lineEdit_2.setFont(font)
         self.lineEdit_2.setStyleSheet("background-color: rgb(128, 128, 128);\n"
-"")
+                                      "")
         self.lineEdit_2.setObjectName("lineEdit_2")
         self.label_7 = QtWidgets.QLabel(self.tab_2)
         self.label_7.setGeometry(QtCore.QRect(20, 250, 191, 51))
@@ -241,7 +241,7 @@ class Ui_MainWindow(object):
         self.label_7.setObjectName("label_7")
         self.buttonBox_3 = QtWidgets.QDialogButtonBox(self.tab_2)
         self.buttonBox_3.setGeometry(QtCore.QRect(350, 250, 156, 51))
-        self.buttonBox_3.setStandardButtons(QtWidgets.QDialogButtonBox.Apply|QtWidgets.QDialogButtonBox.Reset)
+        self.buttonBox_3.setStandardButtons(QtWidgets.QDialogButtonBox.Apply | QtWidgets.QDialogButtonBox.Reset)
         self.buttonBox_3.setCenterButtons(False)
         self.buttonBox_3.setObjectName("buttonBox_3")
         self.lineEdit_3 = QtWidgets.QLineEdit(self.tab_2)
@@ -252,7 +252,7 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.lineEdit_3.setFont(font)
         self.lineEdit_3.setStyleSheet("background-color: rgb(128, 128, 128);\n"
-"")
+                                      "")
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.label_8 = QtWidgets.QLabel(self.tab_2)
         self.label_8.setGeometry(QtCore.QRect(20, 350, 191, 51))
@@ -262,7 +262,7 @@ class Ui_MainWindow(object):
         self.label_8.setObjectName("label_8")
         self.buttonBox_4 = QtWidgets.QDialogButtonBox(self.tab_2)
         self.buttonBox_4.setGeometry(QtCore.QRect(350, 350, 156, 51))
-        self.buttonBox_4.setStandardButtons(QtWidgets.QDialogButtonBox.Apply|QtWidgets.QDialogButtonBox.Reset)
+        self.buttonBox_4.setStandardButtons(QtWidgets.QDialogButtonBox.Apply | QtWidgets.QDialogButtonBox.Reset)
         self.buttonBox_4.setCenterButtons(False)
         self.buttonBox_4.setObjectName("buttonBox_4")
         self.lineEdit_4 = QtWidgets.QLineEdit(self.tab_2)
@@ -273,7 +273,7 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.lineEdit_4.setFont(font)
         self.lineEdit_4.setStyleSheet("background-color: rgb(128, 128, 128);\n"
-"")
+                                      "")
         self.lineEdit_4.setObjectName("lineEdit_4")
         self.label_9 = QtWidgets.QLabel(self.tab_2)
         self.label_9.setGeometry(QtCore.QRect(20, 450, 191, 51))
@@ -283,7 +283,7 @@ class Ui_MainWindow(object):
         self.label_9.setObjectName("label_9")
         self.buttonBox_5 = QtWidgets.QDialogButtonBox(self.tab_2)
         self.buttonBox_5.setGeometry(QtCore.QRect(350, 450, 156, 51))
-        self.buttonBox_5.setStandardButtons(QtWidgets.QDialogButtonBox.Apply|QtWidgets.QDialogButtonBox.Reset)
+        self.buttonBox_5.setStandardButtons(QtWidgets.QDialogButtonBox.Apply | QtWidgets.QDialogButtonBox.Reset)
         self.buttonBox_5.setCenterButtons(False)
         self.buttonBox_5.setObjectName("buttonBox_5")
         self.lineEdit_5 = QtWidgets.QLineEdit(self.tab_2)
@@ -294,7 +294,7 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.lineEdit_5.setFont(font)
         self.lineEdit_5.setStyleSheet("background-color: rgb(128, 128, 128);\n"
-"")
+                                      "")
         self.lineEdit_5.setObjectName("lineEdit_5")
         self.label_10 = QtWidgets.QLabel(self.tab_2)
         self.label_10.setGeometry(QtCore.QRect(20, 550, 191, 51))
@@ -304,13 +304,13 @@ class Ui_MainWindow(object):
         self.label_10.setObjectName("label_10")
         self.buttonBox_6 = QtWidgets.QDialogButtonBox(self.tab_2)
         self.buttonBox_6.setGeometry(QtCore.QRect(350, 550, 156, 51))
-        self.buttonBox_6.setStandardButtons(QtWidgets.QDialogButtonBox.Apply|QtWidgets.QDialogButtonBox.Reset)
+        self.buttonBox_6.setStandardButtons(QtWidgets.QDialogButtonBox.Apply | QtWidgets.QDialogButtonBox.Reset)
         self.buttonBox_6.setCenterButtons(False)
         self.buttonBox_6.setObjectName("buttonBox_6")
         self.tabWidget.addTab(self.tab_2, "")
         self.tab = QtWidgets.QWidget()
         self.tab.setStyleSheet("background-color: rgb(73, 77, 78);\n"
-"")
+                               "")
         self.tab.setObjectName("tab")
         self.pushButton_6 = QtWidgets.QPushButton(self.tab)
         self.pushButton_6.setGeometry(QtCore.QRect(155, 700, 211, 51))
@@ -364,7 +364,7 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab, "")
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setStyleSheet("background-color: rgb(73, 77, 78);\n"
-"")
+                                 "")
         self.tab_3.setObjectName("tab_3")
         self.label_11 = QtWidgets.QLabel(self.tab_3)
         self.label_11.setGeometry(QtCore.QRect(90, 20, 331, 71))
@@ -413,7 +413,7 @@ class Ui_MainWindow(object):
         self.label_13.setStyleSheet("")
         self.label_13.setText("")
         self.label_13.setPixmap(QtGui.QPixmap(""))
-        self.label_13.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignHCenter)
+        self.label_13.setAlignment(QtCore.Qt.AlignBottom | QtCore.Qt.AlignHCenter)
         self.label_13.setObjectName("label_13")
         MainWindow.setCentralWidget(self.centralwidget)
         self.actiondffgf = QtWidgets.QAction(MainWindow)
@@ -424,7 +424,7 @@ class Ui_MainWindow(object):
         self.actionfg.setObjectName("actionfg")
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -432,19 +432,49 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "VirtA"))
         self.textEdit.setPlaceholderText(_translate("MainWindow", "Введите ваш запрос..."))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_1), _translate("MainWindow", "Разговор"))
-        self.label_5.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600;\">Настройка горячих клавиш</span></p></body></html>"))
-        self.label_6.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Открыть/свернуть <br/>помощника</p></body></html>"))
-        self.label_7.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Голосовая<br/>команда</p></body></html>"))
-        self.label_8.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Закрыть окно<br/>уведомлений</p></body></html>"))
-        self.label_9.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Открыть/свернуть<br/>окно чата</p></body></html>"))
-        self.label_10.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Закрыть<br/>аватара</p></body></html>"))
+        self.label_5.setText(_translate("MainWindow",
+                                        "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600;\">Настройка горячих клавиш</span></p></body></html>"))
+        self.label_6.setText(_translate("MainWindow",
+                                        "<html><head/><body><p align=\"center\">Открыть/свернуть <br/>помощника</p></body></html>"))
+        self.label_7.setText(
+            _translate("MainWindow", "<html><head/><body><p align=\"center\">Голосовая<br/>команда</p></body></html>"))
+        self.label_8.setText(_translate("MainWindow",
+                                        "<html><head/><body><p align=\"center\">Закрыть окно<br/>уведомлений</p></body></html>"))
+        self.label_9.setText(_translate("MainWindow",
+                                        "<html><head/><body><p align=\"center\">Открыть/свернуть<br/>окно чата</p></body></html>"))
+        self.label_10.setText(
+            _translate("MainWindow", "<html><head/><body><p align=\"center\">Закрыть<br/>аватара</p></body></html>"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Настройки"))
         self.pushButton_6.setText(_translate("MainWindow", "Закрыть аватара"))
-        self.label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600;\">Нажмите на коробку <br/>для выбора аватара</span></p></body></html>"))
+        self.label.setText(_translate("MainWindow",
+                                      "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600;\">Нажмите на коробку <br/>для выбора аватара</span></p></body></html>"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Аватар"))
-        self.label_11.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600;\">Краткая инструкция и <br/>информация обо мне</span></p></body></html>"))
-        self.label_12.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">VirtA - Virtual assistant</span><span style=\" font-size:10pt;\"><br/>Привет, Я VirtA - десктопный помощник!!! <br/>К сожалению я не имею своего облика, <br/>но я могу принимать облики других <br/>персонажей. Неоторых из них вы можете <br/>посмотреть на вкладке &quot;Аватар&quot;. Надевая <br/>эти облики, я с радостью помогаю моему <br/>пользователю и скрашиваю его <br/>времяприпровождения за <br/>компьютером. Ведь я могу открывать <br/>различные сайты, папки, и вообще все <br/>что можно открыть. Могу развлечь <br/>тебя небольшими играми и рассказать <br/>последние новости. Ну или ты можешь <br/>просто полюбоваться мной на <br/>своем рабочем столе.</span></p><p align=\"center\"><span style=\" font-size:10pt;\"><br/></span><span style=\" font-size:10pt; font-weight:600;\">Подробнее о командах:</span><span style=\" font-size:10pt;\"><br/>1. </span><span style=\" font-family:\'Times New Roman\',\'serif\'; font-size:10pt;\">открыть  «название сайта/папки/файла/приложения»; <br/>2. показать время;<br/>3. вывести информацию о компьютере/ноутбуке; <br/>4. вывести информацию о погоде с места моего <br/>расположения; <br/>5. вывести информацию о моем местоположении;<br/>6. добавить «текст пользователя» в «название текстового <br/>файла»</span></p></body></html>"))
+        self.label_11.setText(_translate("MainWindow",
+                                         "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600;\">Краткая инструкция и <br/>информация обо мне</span></p></body></html>"))
+        self.label_12.setText(_translate("MainWindow",
+                                         "<html><head/><body><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">VirtA - Virtual assistant</span><span style=\" font-size:10pt;\"><br/>Привет, Я VirtA - десктопный помощник!!! <br/>К сожалению я не имею своего облика, <br/>но я могу принимать облики других <br/>персонажей. Неоторых из них вы можете <br/>посмотреть на вкладке &quot;Аватар&quot;. Надевая <br/>эти облики, я с радостью помогаю моему <br/>пользователю и скрашиваю его <br/>времяприпровождения за <br/>компьютером. Ведь я могу открывать <br/>различные сайты, папки, и вообще все <br/>что можно открыть. Могу развлечь <br/>тебя небольшими играми и рассказать <br/>последние новости. Ну или ты можешь <br/>просто полюбоваться мной на <br/>своем рабочем столе.</span></p><p align=\"center\"><span style=\" font-size:10pt;\"><br/></span><span style=\" font-size:10pt; font-weight:600;\">Подробнее о командах:</span><span style=\" font-size:10pt;\"><br/>1. </span><span style=\" font-family:\'Times New Roman\',\'serif\'; font-size:10pt;\">открыть  «название сайта/папки/файла/приложения»; <br/>2. показать время;<br/>3. вывести информацию о компьютере/ноутбуке; <br/>4. вывести информацию о погоде с места моего <br/>расположения; <br/>5. вывести информацию о моем местоположении;<br/>6. добавить «текст пользователя» в «название текстового <br/>файла»</span></p></body></html>"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Информация"))
         self.actiondffgf.setText(_translate("MainWindow", "dffgf"))
         self.actiondfgd.setText(_translate("MainWindow", "dfgd"))
         self.actionfg.setText(_translate("MainWindow", "fg"))
+        self.center()
+
+    def center(self):
+        # frameGm = self.frameGeometry()
+        #
+        # # screen = QtWidgets.QApplication.desktop().screenNumber(QtWidgets.QApplication.desktop().cursor().pos())
+        # # centerPoint = QtWidgets.QApplication.desktop().screenGeometry(screen).center()
+        #
+        # centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+        #
+        # frameGm.moveCenter(centerPoint)
+        #
+        # # frameGm.translate(QtCore.QPoint(-100, 0))
+        #
+        # self.move(frameGm.topLeft())
+
+        screen = QtWidgets.QApplication.desktop().screenGeometry()
+        widget = self.geometry()
+        x = widget.width() / 2
+        y = screen.height() - widget.height()
+        self.move(x, y)
