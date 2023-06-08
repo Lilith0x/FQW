@@ -1,4 +1,4 @@
-from src.ui.cliengui import Ui_MainWindow
+from FQW.src.ui.cliengui import Ui_MainWindow
 from PyQt5 import QtGui, QtWidgets
 from src.functions.voice_input import VoiceInputThread
 from src.functions.voice_assistant import VoiceAssistantThread
