@@ -2,7 +2,7 @@ import platform
 import config
 from fuzzywuzzy import fuzz
 import datetime
-from num2t4ru import num2text
+from num2words import num2words
 import webbrowser
 import random
 
@@ -70,7 +70,7 @@ def execute_cmd(cmd: str):
     elif cmd == 'ctime':
         # current time
         now = datetime.datetime.now()
-        text = "Сейчас " + num2text(now.hour) + " " + num2text(now.minute)
+        text = "Сейчас " + num2words(now.hour) + " " + num2words(now.minute)
 
         text_2 = now
 
