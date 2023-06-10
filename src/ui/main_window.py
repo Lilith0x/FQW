@@ -1,14 +1,17 @@
 from src.ui.cliengui import Ui_MainWindow
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets, QtCore
 from src.functions.voice_input import VoiceInputThread
 from src.functions.voice_assistant import VoiceAssistantThread
 import config
 from src.functions.functions import va_respond
 
+
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.move_window()
+
         # кнопка отправки сообщения
         self.pushButton.clicked.connect(self.send)
 
@@ -37,6 +40,28 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.textBrowser.append(f"{config.VA_NAME} (v{config.VA_VER}) начал свою работу ..." + "\n")
         self.start_speak_assistant(f"Здравствуйте! Меня зовут Виртаа")
 
+        self.textEdit.installEventFilter(self)
+        # self.textEdit.setStyleSheet("QTextEdit {color:red}")
+        # self.textEdit.setCursor(QtCore.Qt.WaitCursor)
+        # self.textEdit.viewport().setCursor(QtCore.Qt.WaitCursor)
+        # # self.test = QtGui.QCursor()
+        # # self.test.setForeground(QtGui.QBrush(QtGui.QColor(255,255,255)))
+        # # self.textEdit.mergeCurrentCharFormat(self.test)
+        # # self.textEdit.setCursor(Qt.WaitCursor)
+        # # self.textEdit.viewport().setCursor(Qt.WaitCursor)
+
+    def eventFilter(self, obj, event):
+        if event.type() == QtCore.QEvent.KeyPress and obj is self.textEdit:
+            if event.key() == QtCore.Qt.Key_Return and self.textEdit.hasFocus() and event.modifiers() == QtCore.Qt.ShiftModifier:
+                self.send()
+        return super().eventFilter(obj, event)
+
+    def move_window(self):
+        screen = QtWidgets.QApplication.desktop().screenGeometry()
+        widget = self.geometry()
+        x = int((3 * screen.height()) / 100)
+        y = int((screen.height() - widget.height()) - (3 * screen.width()) / 100)
+        self.move(x, y)
 
     def one_avatar(self):
         self.label_13.setPixmap(QtGui.QPixmap("resours/head/4.png"))
@@ -67,7 +92,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.textEdit.clear()
 
     def start_voice_input(self):
-        self.start_speak_assistant("Говорите")
+        self.start_speak_assistant("Говоритее")
         self.thread_voice.handler_status = True
         self.thread_voice.start()
         # self.textBrowser.clear()
@@ -83,7 +108,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         result = va_respond(voice_command[0])
         # print(result)
         self.command_execution(result)
-
 
     def start_speak_assistant(self, text):
         self.thread_voice_assistant.set_text_say(text)
@@ -109,8 +133,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.textBrowser.append(result[2])
 
         self.textBrowser.append("-----------")
-
-
 
 
 if __name__ == "__main__":

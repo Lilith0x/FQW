@@ -457,24 +457,3 @@ class Ui_MainWindow(object):
         self.actiondffgf.setText(_translate("MainWindow", "dffgf"))
         self.actiondfgd.setText(_translate("MainWindow", "dfgd"))
         self.actionfg.setText(_translate("MainWindow", "fg"))
-        self.center()
-
-    def center(self):
-        # frameGm = self.frameGeometry()
-        #
-        # # screen = QtWidgets.QApplication.desktop().screenNumber(QtWidgets.QApplication.desktop().cursor().pos())
-        # # centerPoint = QtWidgets.QApplication.desktop().screenGeometry(screen).center()
-        #
-        # centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
-        #
-        # frameGm.moveCenter(centerPoint)
-        #
-        # # frameGm.translate(QtCore.QPoint(-100, 0))
-        #
-        # self.move(frameGm.topLeft())
-
-        screen = QtWidgets.QApplication.desktop().screenGeometry()
-        widget = self.geometry()
-        x = widget.width() / 2
-        y = screen.height() - widget.height()
-        self.move(x, y)
