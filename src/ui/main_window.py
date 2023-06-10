@@ -71,28 +71,28 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #     return super().eventFilter(obj, event)
 
         # Горячие клавиши
-        self.button_list = [self.ui.key1, self.ui.key2, self.ui.key3]
-        self.draw_values()
+        # self.button_list = [self.ui.key1, self.ui.key2, self.ui.key3]
+        # self.draw_values()
 
-    def file_read():
-        bind_dict = {}
-        if os.path.exists('hotkey.dt'):
-            with open('hotkey.dt') as inf:
-                for line in inf:
-                    if re.match(r'([^:]+):([^:]+)', line):
-                        bind_dict[line[:line.find(':')]] = line[line.find(':') + 1:].strip()
-                    else:
-                        file_clear()
-        else:
-            file_clear()
-        return bind_dict
-
-    def draw_values(self):
-        k = 0
-        for key, value in file_read().items():
-            self.button_list[k].setText(key)
-            self.lineEdit_list[k].setText(value)
-            k += 1
+    # def file_read():
+    #     bind_dict = {}
+    #     if os.path.exists('hotkey.dt'):
+    #         with open('hotkey.dt') as inf:
+    #             for line in inf:
+    #                 if re.match(r'([^:]+):([^:]+)', line):
+    #                     bind_dict[line[:line.find(':')]] = line[line.find(':') + 1:].strip()
+    #                 else:
+    #                     file_clear()
+    #     else:
+    #         file_clear()
+    #     return bind_dict
+    #
+    # def draw_values(self):
+    #     k = 0
+    #     for key, value in file_read().items():
+    #         self.button_list[k].setText(key)
+    #         self.lineEdit_list[k].setText(value)
+    #         k += 1
 
     def move_window(self):
         screen = QtWidgets.QApplication.desktop().screenGeometry()
