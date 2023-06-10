@@ -61,26 +61,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.textBrowser.append(f"{config.VA_NAME} (v{config.VA_VER}) начал свою работу ..." + "\n")
         self.start_speak_assistant(f"Здравствуйте! Меня зовут Виртаа")
 
-        # self.textEdit.setStyleSheet("QTextEdit {color:red}")
-        # self.textEdit.setCursor(QtCore.Qt.WaitCursor)
-        # self.textEdit.viewport().setCursor(QtCore.Qt.WaitCursor)
-        # # self.test = QtGui.QCursor()
-        # # self.test.setForeground(QtGui.QBrush(QtGui.QColor(255,255,255)))
-        # # self.textEdit.mergeCurrentCharFormat(self.test)
-        # # self.textEdit.setCursor(Qt.WaitCursor)
-        # # self.textEdit.viewport().setCursor(Qt.WaitCursor)
 
-    def eventFilter(self, obj, event):
-        if event.type() == QtCore.QEvent.KeyPress and obj is self.textEdit:
-            if event.key() == QtCore.Qt.Key_Return and self.textEdit.hasFocus() and event.modifiers() == QtCore.Qt.ShiftModifier:
-                self.send()
-        return super().eventFilter(obj, event)
+        # self.textEdit.installEventFilter(self)
+    # def eventFilter(self, obj, event):
+    #     if event.type() == QtCore.QEvent.KeyPress and obj is self.textEdit:
+    #         if event.key() == QtCore.Qt.Key_Return and self.textEdit.hasFocus() and event.modifiers() == QtCore.Qt.ShiftModifier:
+    #             self.send()
+    #             self.textEdit.clear()
+    #     return super().eventFilter(obj, event)
 
     def move_window(self):
         screen = QtWidgets.QApplication.desktop().screenGeometry()
         widget = self.geometry()
         x = int((3 * screen.height()) / 100)
-        y = int((screen.height() - widget.height()) - (3 * screen.width()) / 100)
+        y = int((screen.height() - widget.height()) - (1 * screen.width()) / 100)
         self.move(x, y)
 
 
@@ -117,6 +111,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def start_voice_input(self):
         self.start_speak_assistant("Говоритее")
         self.thread_voice.handler_status = True
+        # self.thread_voice.stream.start_stream() - ФИКСИТЬ
+
         self.thread_voice.start()
         # self.textBrowser.clear()
 
@@ -125,11 +121,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.textBrowser.append("Ваша команда: " + voice_command[0])
         self.thread_voice.handler_status = False
+        # self.thread_voice.stream.stop_stream() - ВОТ ЭТО НУЖНО БУДЕТ ОТФИКСИТЬ
         self.thread_voice.exit()
 
         # self.start_speak_assistant("Выполняю")
         result = va_respond(voice_command[0])
-        # print(result)
         self.command_execution(result)
 
     def start_speak_assistant(self, text):
@@ -137,7 +133,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.thread_voice_assistant.start()
         self.thread_voice_assistant.exit()
 
-        # self.thread_voice_assistant.stop()
+        # pass
+        # self.thread_voice_assistant.stop() - ХЗ ВЫХОД ИЛИ СТОП
 
     def command_execution(self, result):
         if result[0] in [0, 3]:
