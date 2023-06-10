@@ -17,10 +17,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # кнопка отправки сообщения
         self.pushButton.clicked.connect(self.send)
 
-       # кнопка отправки голосового сообщения
+        # кнопка отправки голосового сообщения
         self.pushButton_2.clicked.connect(self.start_voice_input)
 
-        #сворачивание в трей
+        # сворачивание в трей
         tray_icon = None
 
         self.tray_icon = QSystemTrayIcon(self)
@@ -58,17 +58,41 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_11.clicked.connect(self.four_avatar)
         self.pushButton_6.clicked.connect(self.close_avatar)
 
+        # Старт
         self.textBrowser.append(f"{config.VA_NAME} (v{config.VA_VER}) начал свою работу ..." + "\n")
         self.start_speak_assistant(f"Здравствуйте! Меня зовут Виртаа")
 
-
         # self.textEdit.installEventFilter(self)
-    # def eventFilter(self, obj, event):
-    #     if event.type() == QtCore.QEvent.KeyPress and obj is self.textEdit:
-    #         if event.key() == QtCore.Qt.Key_Return and self.textEdit.hasFocus() and event.modifiers() == QtCore.Qt.ShiftModifier:
-    #             self.send()
-    #             self.textEdit.clear()
-    #     return super().eventFilter(obj, event)
+        # def eventFilter(self, obj, event):
+        #     if event.type() == QtCore.QEvent.KeyPress and obj is self.textEdit:
+        #         if event.key() == QtCore.Qt.Key_Return and self.textEdit.hasFocus() and event.modifiers() == QtCore.Qt.ShiftModifier:
+        #             self.send()
+        #             self.textEdit.clear()
+        #     return super().eventFilter(obj, event)
+
+        # Горячие клавиши
+        self.button_list = [self.ui.key1, self.ui.key2, self.ui.key3]
+        self.draw_values()
+
+    def file_read():
+        bind_dict = {}
+        if os.path.exists('hotkey.dt'):
+            with open('hotkey.dt') as inf:
+                for line in inf:
+                    if re.match(r'([^:]+):([^:]+)', line):
+                        bind_dict[line[:line.find(':')]] = line[line.find(':') + 1:].strip()
+                    else:
+                        file_clear()
+        else:
+            file_clear()
+        return bind_dict
+
+    def draw_values(self):
+        k = 0
+        for key, value in file_read().items():
+            self.button_list[k].setText(key)
+            self.lineEdit_list[k].setText(value)
+            k += 1
 
     def move_window(self):
         screen = QtWidgets.QApplication.desktop().screenGeometry()
@@ -76,7 +100,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         x = int((3 * screen.height()) / 100)
         y = int((screen.height() - widget.height()) - (1 * screen.width()) / 100)
         self.move(x, y)
-
 
     def one_avatar(self):
         self.label_13.setPixmap(QtGui.QPixmap("resours/head/4.png"))
