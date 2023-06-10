@@ -164,7 +164,7 @@ QTabBar::tab::selected
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -512,27 +512,6 @@ color: rgb(255, 215, 0);</string>
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Открыть/свернуть &lt;br/&gt;помощника&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>160</y>
-        <width>101</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(128, 128, 128);
-</string>
-      </property>
-     </widget>
      <widget class="QDialogButtonBox" name="buttonBox_2">
       <property name="geometry">
        <rect>
@@ -547,27 +526,6 @@ color: rgb(255, 215, 0);</string>
       </property>
       <property name="centerButtons">
        <bool>false</bool>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="lineEdit_2">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>340</y>
-        <width>101</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(128, 128, 128);
-</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_7">
@@ -604,27 +562,6 @@ color: rgb(255, 215, 0);</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit_3">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>250</y>
-        <width>101</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(128, 128, 128);
-</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_8">
       <property name="geometry">
        <rect>
@@ -657,6 +594,45 @@ color: rgb(255, 215, 0);</string>
       </property>
       <property name="centerButtons">
        <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_7">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>160</y>
+        <width>101</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>PushButton7</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_8">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>250</y>
+        <width>101</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>PushButton8</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_9">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>340</y>
+        <width>101</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>PushButton9</string>
       </property>
      </widget>
     </widget>
