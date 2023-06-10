@@ -1,9 +1,12 @@
-from FQW.src.ui.cliengui import Ui_MainWindow
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction, qApp
+from src.ui.clientui import Ui_MainWindow
 from PyQt5 import QtGui, QtWidgets
 from src.functions.voice_input import VoiceInputThread
 from src.functions.voice_assistant import VoiceAssistantThread
 import config
 from src.functions.functions import va_respond
+
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -12,8 +15,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # кнопка отправки сообщения
         self.pushButton.clicked.connect(self.send)
 
-        # кнопка отправки голосового сообщения
+       # кнопка отправки голосового сообщения
         self.pushButton_2.clicked.connect(self.start_voice_input)
+
+        #сворачивание в трей
+        tray_icon = None
+
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon("resours/icon.png"))
+
+        show_action = QAction("Открыть", self)
+        hide_action = QAction("Скрыть", self)
+        quit_action = QAction("Закрыть", self)
+        show_action.triggered.connect(self.show)
+        hide_action.triggered.connect(self.hide)
+        quit_action.triggered.connect(qApp.quit)
+        tray_menu = QMenu()
+        tray_menu.addAction(show_action)
+        tray_menu.addAction(hide_action)
+        tray_menu.addAction(quit_action)
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.show()
 
         # поток для голосового ввода
         self.thread_voice = VoiceInputThread()
@@ -37,7 +59,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.textBrowser.append(f"{config.VA_NAME} (v{config.VA_VER}) начал свою работу ..." + "\n")
         self.start_speak_assistant(f"Здравствуйте! Меня зовут Виртаа")
 
-
     def one_avatar(self):
         self.label_13.setPixmap(QtGui.QPixmap("resours/head/4.png"))
 
@@ -60,6 +81,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.start_speak_assistant("Ваша команда: " + self.textEdit.toPlainText())
 
         self.textBrowser.append("Ваша команда: " + self.textEdit.toPlainText())
+        # удаление текста после отправки сообщения
+        self.textEdit.clear()
 
         # self.start_speak_assistant("Выполняю")
         result = va_respond(self.textEdit.toPlainText())
@@ -83,7 +106,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         result = va_respond(voice_command[0])
         # print(result)
         self.command_execution(result)
-
 
     def start_speak_assistant(self, text):
         self.thread_voice_assistant.set_text_say(text)
@@ -109,8 +131,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.textBrowser.append(result[2])
 
         self.textBrowser.append("-----------")
-
-
 
 
 if __name__ == "__main__":
