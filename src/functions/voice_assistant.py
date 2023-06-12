@@ -21,14 +21,14 @@ class VoiceAssistantThread(QtCore.QThread):
 
     def __init__(self):
         super(VoiceAssistantThread, self).__init__()
-        self.audio = None
-
-    def set_text_say(self, text):
-        self.audio = VoiceAssistantThread.model.apply_tts(text=text + "..",
+        self.audio = VoiceAssistantThread.model.apply_tts(text="начинаем",
                                                      speaker=VoiceAssistantThread.speaker,
                                                      sample_rate=VoiceAssistantThread.sample_rate,
                                                      put_accent=VoiceAssistantThread.put_accent,
                                                      put_yo=VoiceAssistantThread.put_yo)
+
+    def set_text_say(self, text):
+        self.audio = VoiceAssistantThread.model.apply_tts(text=text + "..")
 
     # воспроизводим
     def run(self):

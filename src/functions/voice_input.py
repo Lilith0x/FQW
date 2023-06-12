@@ -23,6 +23,7 @@ class VoiceInputThread(QtCore.QThread):
             try:
                 if self.handler_status:
                     try:
+                        # stream.start_stream() - ОТФИКСИТЬ
                         data = VoiceInputThread.stream.read(4000, exception_on_overflow=False)
                         if (VoiceInputThread.rec.AcceptWaveform(data) and len(data) > 0):
                             answer = json.loads(VoiceInputThread.rec.Result())['text']
