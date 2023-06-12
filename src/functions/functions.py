@@ -8,11 +8,10 @@ import random
 
 
 def va_respond(command):
-    # print(voice)
+
     if command.startswith(config.VA_ALIAS) or True:
         # обращаются к ассистенту
         cmd = recognize_cmd(filter_cmd(command))
-
         if cmd['cmd'] not in config.VA_CMD_LIST.keys():
             return [0, "Я не поняла вас"]
         else:
@@ -70,8 +69,8 @@ def execute_cmd(cmd: str):
     elif cmd == 'ctime':
         # current time
         now = datetime.datetime.now()
-        text = "Сейчас " + num2words(now.hour) + " " + num2words(now.minute)
-
+        text = "Сейчас " + num2words(now.hour, lang='ru') + " " + num2words(now.minute, lang="ru")
+        # print(text)
         text_2 = now
 
         return [2, text, str(text_2)]
