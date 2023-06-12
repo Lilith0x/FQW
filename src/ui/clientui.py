@@ -252,6 +252,8 @@ class Ui_MainWindow(object):
         self.buttonBox.setGeometry(QtCore.QRect(170, 550, 151, 51))
         self.buttonBox.setOrientation(QtCore.Qt.Vertical)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Reset|QtWidgets.QDialogButtonBox.Save)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Save).setText("Сохранить")
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Reset).setText("Отключить клавиши")
         self.buttonBox.setCenterButtons(False)
         self.buttonBox.setObjectName("buttonBox")
         self.tabWidget.addTab(self.tab_2, "")

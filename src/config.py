@@ -4,7 +4,7 @@
 
 VA_NAME = 'VirtA'
 
-VA_VER = "0.2"
+VA_VER = "0.4"
 
 VA_ALIAS = ('вирта', 'вирт')
 
@@ -18,4 +18,4 @@ VA_CMD_LIST = {
     "open_browser": ('открой браузер', 'запусти браузер', 'браузер')
 }
 
-VA_HOT_KEYS = ['q', 'w', 'e']
+VA_HOT_KEYS = ['ctrl+q', 'ctrl+w', 'ctrl+e']
