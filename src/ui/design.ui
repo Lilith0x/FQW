@@ -497,10 +497,10 @@ color: rgb(255, 215, 0);</string>
      <widget class="QLabel" name="label_6">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>330</y>
+        <x>70</x>
+        <y>400</y>
         <width>141</width>
-        <height>61</height>
+        <height>71</height>
        </rect>
       </property>
       <property name="font">
@@ -512,29 +512,13 @@ color: rgb(255, 215, 0);</string>
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Открыть/свернуть &lt;br/&gt;помощника&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
-     <widget class="QDialogButtonBox" name="buttonBox_2">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>250</y>
-        <width>156</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Apply|QDialogButtonBox::Reset</set>
-      </property>
-      <property name="centerButtons">
-       <bool>false</bool>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_7">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>150</y>
+        <x>70</x>
+        <y>160</y>
         <width>141</width>
-        <height>61</height>
+        <height>71</height>
        </rect>
       </property>
       <property name="font">
@@ -546,29 +530,13 @@ color: rgb(255, 215, 0);</string>
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Голосовая&lt;br/&gt;команда&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
-     <widget class="QDialogButtonBox" name="buttonBox_3">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>160</y>
-        <width>156</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Apply|QDialogButtonBox::Reset</set>
-      </property>
-      <property name="centerButtons">
-       <bool>false</bool>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_8">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>240</y>
+        <x>70</x>
+        <y>280</y>
         <width>141</width>
-        <height>61</height>
+        <height>71</height>
        </rect>
       </property>
       <property name="font">
@@ -580,29 +548,13 @@ color: rgb(255, 215, 0);</string>
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Закрыть&lt;br/&gt;аватара&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
-     <widget class="QDialogButtonBox" name="buttonBox_4">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>340</y>
-        <width>156</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Apply|QDialogButtonBox::Reset</set>
-      </property>
-      <property name="centerButtons">
-       <bool>false</bool>
-      </property>
-     </widget>
      <widget class="QPushButton" name="pushButton_7">
       <property name="geometry">
        <rect>
-        <x>180</x>
+        <x>280</x>
         <y>160</y>
-        <width>101</width>
-        <height>41</height>
+        <width>131</width>
+        <height>71</height>
        </rect>
       </property>
       <property name="text">
@@ -612,10 +564,10 @@ color: rgb(255, 215, 0);</string>
      <widget class="QPushButton" name="pushButton_8">
       <property name="geometry">
        <rect>
-        <x>180</x>
-        <y>250</y>
-        <width>101</width>
-        <height>41</height>
+        <x>280</x>
+        <y>280</y>
+        <width>131</width>
+        <height>71</height>
        </rect>
       </property>
       <property name="text">
@@ -625,14 +577,33 @@ color: rgb(255, 215, 0);</string>
      <widget class="QPushButton" name="pushButton_9">
       <property name="geometry">
        <rect>
-        <x>180</x>
-        <y>340</y>
-        <width>101</width>
-        <height>41</height>
+        <x>280</x>
+        <y>400</y>
+        <width>131</width>
+        <height>71</height>
        </rect>
       </property>
       <property name="text">
        <string>PushButton9</string>
+      </property>
+     </widget>
+     <widget class="QDialogButtonBox" name="buttonBox">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>550</y>
+        <width>151</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="standardButtons">
+       <set>QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
+      </property>
+      <property name="centerButtons">
+       <bool>false</bool>
       </property>
      </widget>
     </widget>
