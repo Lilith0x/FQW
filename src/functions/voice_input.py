@@ -7,7 +7,7 @@ import pyaudio
 class VoiceInputThread(QtCore.QThread):
     signal = QtCore.pyqtSignal(list)
     handler_status = True
-    model = Model("..//..//models//voice_recognition_small_rus")
+    model = Model("../../models/voice_recognition_small_rus")
     # model = Model("..//models//voice_recognition_small_rus")
     rec = KaldiRecognizer(model, 16000)
     pA = pyaudio.PyAudio()
