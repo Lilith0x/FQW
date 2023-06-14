@@ -158,7 +158,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.thread_hk_settings.set_hotkey_button(button)
         self.thread_hk_settings.start()
 
-
     def change_hotkey(self, hotkey):
         self.thread_hk_settings.hotkey_button.setText(hotkey)
         for i in self.button_list:
@@ -170,13 +169,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.button_list[check] = hotkey
         self.thread_hotkeys.set_hotkey(hotkey, check)
 
-
-    def apply_hotkey(self):
-        pass
-
-    def reset_hotkey(self):
-        pass
-
     def read_file_hotkeys(self):
         k = 0
         # self.button_list = config.VA_HOT_KEYS
@@ -184,6 +176,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.button_list[k].setText(key)
             # self.lineEdit_list[k].setText(value)
             k += 1
+
+
+    def apply_hotkey(self):
+        pass
+
+    def reset_hotkey(self):
+        pass
 
     def move_window(self):
         screen = QtWidgets.QApplication.desktop().screenGeometry()

@@ -13,8 +13,9 @@ class VoiceAssistantThread(QtCore.QThread):
     put_yo = True
     device = torch.device('cpu')  # cpu или gpu
     # text = "Хауди Хо, друзья!!!"
-    model, _ = torch.hub.load(repo_or_dir='snakers4/silero-models',
+    model, _ = torch.hub.load(repo_or_dir='../../models/snakers4_silero-models_master',
                                    model='silero_tts',
+                                   source='local',
                                    language=language,
                                    speaker=model_id)
     model.to(device)
@@ -28,7 +29,11 @@ class VoiceAssistantThread(QtCore.QThread):
                                                      put_yo=VoiceAssistantThread.put_yo)
 
     def set_text_say(self, text):
-        self.audio = VoiceAssistantThread.model.apply_tts(text=text + "..")
+        self.audio = VoiceAssistantThread.model.apply_tts(text=text + "..",
+                                                          speaker=VoiceAssistantThread.speaker,
+                                                     sample_rate=VoiceAssistantThread.sample_rate,
+                                                     put_accent=VoiceAssistantThread.put_accent,
+                                                     put_yo=VoiceAssistantThread.put_yo)
 
     # воспроизводим
     def run(self):
@@ -36,3 +41,14 @@ class VoiceAssistantThread(QtCore.QThread):
         time.sleep((len(self.audio) / VoiceAssistantThread.sample_rate) + 0.5)
         sd.stop()
         self.audio = None
+
+#     def test(self):
+#         sd.play(self.audio, VoiceAssistantThread.sample_rate * 1.05)
+#         time.sleep((len(self.audio) / VoiceAssistantThread.sample_rate) + 0.5)
+#         sd.stop()
+#         self.audio = None
+#
+#
+# test = VoiceAssistantThread()
+# test.set_text_say('проверка')
+# test.test()
