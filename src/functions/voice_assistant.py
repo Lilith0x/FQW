@@ -13,7 +13,7 @@ class VoiceAssistantThread(QtCore.QThread):
     put_yo = True
     device = torch.device('cpu')  # cpu или gpu
     # text = "Хауди Хо, друзья!!!"
-    model, _ = torch.hub.load(repo_or_dir='../../models/snakers4_silero-models_master',
+    model, _ = torch.hub.load(repo_or_dir='../models/snakers4_silero-models_master',
                                    model='silero_tts',
                                    source='local',
                                    language=language,
