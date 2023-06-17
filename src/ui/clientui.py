@@ -361,7 +361,7 @@ class Ui_MainWindow(object):
         self.label_13.setGeometry(QtCore.QRect(130, 10, 241, 351))
         self.label_13.setStyleSheet("")
         self.label_13.setText("")
-        self.label_13.setPixmap(QtGui.QPixmap("../data/resours/head/2.png"))
+        self.label_13.setPixmap(QtGui.QPixmap(""))
         self.label_13.setScaledContents(True)
         self.label_13.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignHCenter)
         self.label_13.setObjectName("label_13")

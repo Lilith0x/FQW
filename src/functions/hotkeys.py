@@ -19,7 +19,6 @@ class HotKeysSettingsThread(QtCore.QThread):
 
     def set_hotkeys_button(self, hotkeys):
         self.hotkeys_button = hotkeys
-        # pass
 
     def run(self):
         hotkey = keyboard.read_hotkey(suppress=False)
@@ -36,47 +35,17 @@ class HotKeysThread(QtCore.QThread):
     def set_hotkeys(self, hotkeys):
         self.hotkeys = hotkeys
 
-    # def install_hotkeys(self, hotkey, func):
-    #     if func == 0:
-    #         keyboard.add_hotkey(hotkey, self.main_window.start_voice_input)
-    #
-    #     elif func == 1:
-    #         keyboard.add_hotkey(hotkey, self.main_window.close_avatar)
-    #
-    #     elif func == 2:
-    #         keyboard.add_hotkey(hotkey, self.main_window.hide)
-
     def remove_hotkeys(self, hotkeys):
         keyboard.remove_hotkey(hotkeys[0])
         keyboard.remove_hotkey(hotkeys[1])
         keyboard.remove_hotkey(hotkeys[2])
 
-    # def turn_off(self):
-    #     keyboard.remove_hotkey(hotkeys[0])
-
-    # def turn_on(self):
-    #     keyboard.start_recording()
-
-    # print('12')
-
     def run(self):
-        # for i in range(len(self.hotkeys)):
-        #     if i == 0:
         keyboard.add_hotkey(self.hotkeys[0], self.main_window.start_voice_input)
 
-        # elif i == 1:
-        keyboard.add_hotkey(self.hotkeys[1], self.main_window.close_avatar)
+        keyboard.add_hotkey(self.hotkeys[1], self.main_window.show_close_win_hotkeys)
 
-        # elif i == 2:
-        keyboard.add_hotkey(self.hotkeys[2], self.main_window.hide)
+        keyboard.add_hotkey(self.hotkeys[2], self.main_window.show_close_avatar_hotkeys)
 
+        # Попытка добавить для текстового ввода - Enter
         # keyboard.add_hotkey('shift+enter', self.main_window.send)
-
-        # keyboard.unhook_all_hotkeys()
-        # keyboard.remove_hotkey('ctrl+q')
-        # keyboard.remove_hotkey('ctrl+w')
-        # keyboard.remove_hotkey('ctrl+r')
-        # keyboard.add_hotkey('ctrl+q', self.main_window.start_voice_input)
-
-        print(len(keyboard._hotkeys))
-        # print(keyboard.)

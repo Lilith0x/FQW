@@ -6,7 +6,7 @@ from PyQt5.QtCore import pyqtSlot
 import config
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction, qApp, QDialogButtonBox
+from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction, qApp, QDialogButtonBox, QMessageBox, QInputDialog
 from PyQt5 import QtGui, QtWidgets, QtCore
 
 from src.ui.clientui import Ui_MainWindow
@@ -48,7 +48,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tray_icon.show()
         # self.tray_icon.().
 
-        # # поток для голосового ввода
+        # поток для голосового ввода
         self.thread_voice = VoiceInputThread()
         self.thread_voice.signal.connect(self.signal_handler)
 
@@ -72,7 +72,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             f"{self.settings_config['VirtA']['VA_NAME']} (v{self.settings_config['VirtA']['VA_VER']}) начал свою работу ..." + "\n")
         self.start_speak_assistant(f"Здравствуйте! Меня зовут Виртаа")
 
-        # Для ввода Enter
+        # Попытка добавить для текстового ввода - Enter
         # self.textEdit.installEventFilter(self)  # Для ввода Enter
 
         # Горячие клавиши
@@ -88,59 +88,26 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.thread_hotkeys = HotKeysThread(self)
 
         self.buttonBox.button(QtWidgets.QDialogButtonBox.Save).clicked.connect(self.save_hotkey)
-        # self.start_hotkeys()
 
         self.check_turn_hotkeys = int(self.settings_config['Hotkeys']['turn_on_off'])
         if self.check_turn_hotkeys == 0:
             self.buttonBox.button(QtWidgets.QDialogButtonBox.Reset).setText("Включить клавиши")
-            # self.thread_hotkeys.turn_off()
-            print(123)
-            # self.thread_hotkeys.remove_hotkeys(self.thread_hk_settings.hotkeys_button)
 
-            # pass
         elif self.check_turn_hotkeys == 1:
             self.buttonBox.button(QtWidgets.QDialogButtonBox.Reset).setText("Отключить клавиши")
             self.start_hotkeys()
 
         self.buttonBox.button(QtWidgets.QDialogButtonBox.Reset).clicked.connect(self.turn_hotkey)
 
+        self.check_tray_hk = 1
+        self.check_avatar_hk = 1
+
+        QInputDialog.getText(self, 'Ввод заметки',
+                                            'Введите ваш текст для дальнейшего сохранения '
+                                            'его в файле "Заметки от VirtA.txt".')
 
 
-    # def start_program(self):
-    #     self.return_off()
-    #     threading.Thread(target=self.animate_button, args=(self.sender(),)).start()
-    #     global program_status
-    #     program_status = not program_status
-    #     if program_status:
-    #         self.ui.startButton.setText('Остановить')
-    #         self.save_elements()
-    #         threading.Thread(target=bind_thread, args=(file_read(),)).start()
-    #     else:
-    #         self.ui.startButton.setText('Запустить')
-
-    # def save_elements(self):
-    #     # self.return_off()
-    #     threading.Thread(target=self.animate_button, args=(self.sender(),)).start()
-    #     bind_dict = self.button_list
-    #         # {self.button_list[i].text():self.lineEdit_list[i].text() for i in range(len(self.button_list)) if self.lineEdit_list[i].text() and self.button_list[i].text()}
-    #     # file_save(bind_dict)
-
-    # def clear_elements(self):
-    #     threading.Thread(target=self.animate_button, args=(self.sender(),)).start()
-    #     # self.can_return = not self.can_return
-    #     # if self.can_return:
-    #     #     self.ui.clearButton.setText('Вернуть')
-    #     for element in self.button_list:
-    #         element.setText('')
-    #     # else:
-    #     #     self.ui.clearButton.setText('Очистить')
-    #     #     self.draw_values()
-
-    # def animate_button(self, button):
-    #     button.setStyleSheet('background-color: #D3D3D3;')
-    #     time.sleep(0.5)
-    #     button.setStyleSheet('')
-
+    # Попытка добавить для текстового ввода - Enter
     # def eventFilter(self, obj, event):
     #     if event.type() == QtCore.QEvent.KeyPress and obj is self.textEdit:
     #         if event.key() == QtCore.Qt.Key_Return and self.textEdit.hasFocus() and event.modifiers() == QtCore.Qt.ShiftModifier:
@@ -149,18 +116,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     #     return super().eventFilter(obj, event)
 
     def start_hotkeys(self):
-        # self.thread_hk_settings.read_file_hotkeys(self.settings_config)
-
-        # print(self.button_list)
-
-        # self.saveButton = self.buttonBox_4.button(QDialogButtonBox.Apply)
-        # self.saveButton.clicked.connect(self.save_elements)
-        #
-        # self.clearButton = self.buttonBox_4.button(QDialogButtonBox.Reset)
-        # self.clearButton.clicked.connect(self.clear_elements)
-
-        # self.startButton.clicked.connect(self.start_program)
-        # self.start_program()
         self.thread_hotkeys.set_hotkeys(self.thread_hk_settings.hotkeys_button)
         self.thread_hotkeys.start()
 
@@ -170,33 +125,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             i.setEnabled(False)
 
         button.setStyleSheet('background-color: rgb(128, 128, 128);')
-
-        # check = self.button_list.index(button)
-        # print(check)
-        # print(self.button_list[check].text())
-
-        # Tut
-        # if self.button_list[check].text() != '':
-        #     print(112)
-
-        # self.thread_hotkeys.remove_hotkeys(self.settings_config)
-
         self.thread_hk_settings.set_hotkey_button(button)
         self.thread_hk_settings.start()
         if self.check_turn_hotkeys == 1:
             self.thread_hotkeys.remove_hotkeys(self.thread_hk_settings.hotkeys_button)
 
     def change_hotkey(self, hotkey):
-        # self.turn_hotkey()
         if hotkey in self.thread_hk_settings.hotkeys_button:
-            print('Данное сочетание клавиш уже используется!!!')
+            QMessageBox.warning(self, "Ошибка", "'Данное сочетание клавиш уже используется")
+
+            for button in range(len(self.button_list)):
+                # but_list.append(button.text())
+                self.button_list[button].setText(self.thread_hk_settings.hotkeys_button[button])
         else:
             self.thread_hk_settings.hotkey_button.setText(hotkey)
-
-            # check = self.button_list.index(self.thread_hk_settings.hotkey_button)
-            # print(check)
-            # self.button_list[check] = hotkey
-            # self.thread_hotkeys.install_hotkeys(hotkey, check)
 
         self.thread_hk_settings.hotkey_button.setStyleSheet('background-color: rgb(73, 77, 78);')
 
@@ -205,27 +147,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.check_turn_hotkeys == 1:
             self.start_hotkeys()
 
-    # def read_file_hotkeys(self):
-    #     k = 0
-    #     # self.button_list = config.VA_HOT_KEYS
-    #     for key in config.VA_HOT_KEYS:
-    #         self.button_list[k].setText(key)
-    #         # self.lineEdit_list[k].setText(value)
-    #         k += 1
-
     def save_hotkey(self):
         if self.check_turn_hotkeys == 1:
             self.thread_hotkeys.remove_hotkeys(self.thread_hk_settings.hotkeys_button)
 
-
         but_list = []
         for button in self.button_list:
             but_list.append(button.text())
-            print(but_list)
         if len(but_list) == len(list(set(but_list))):
             self.thread_hk_settings.set_hotkeys_button(but_list)
         else:
-            print("У вас есть одинаковые сочетания!!!")
+            QMessageBox.warning(self, "Ошибка", "У вас есть одинаковые сочетания")
+
 
         if self.check_turn_hotkeys == 1:
             self.start_hotkeys()
@@ -238,11 +171,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def turn_hotkey(self):
         if self.check_turn_hotkeys == 0:
-            print(1)
             self.start_hotkeys()
-            print('2')
             self.buttonBox.button(QtWidgets.QDialogButtonBox.Reset).setText("Отключить клавиши")
-            print('1')
             self.check_turn_hotkeys = 1
             # pass
         elif self.check_turn_hotkeys == 1:
@@ -253,7 +183,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.settings_config["Hotkeys"]["turn_on_off"] = str(self.check_turn_hotkeys)
         with open("../data/config/settings.ini", 'w') as configfile:
             self.settings_config.write(configfile)
-        # pass
+
+    def show_close_avatar_hotkeys(self):
+        if self.check_avatar_hk == 1:
+            self.close_avatar()
+            self.check_avatar_hk = 0
+        elif self.check_avatar_hk == 0:
+            self.one_avatar()
+            self.check_avatar_hk = 1
+
+    def show_close_win_hotkeys(self):
+        if self.check_tray_hk == 1:
+            self.hide()
+            self.check_tray_hk = 0
+        elif self.check_tray_hk == 0:
+            self.show()
+            self.check_tray_hk = 1
 
     def move_window(self):
         screen = QtWidgets.QApplication.desktop().screenGeometry()
@@ -263,16 +208,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.move(x, y)
 
     def one_avatar(self):
-        self.label_13.setPixmap(QtGui.QPixmap("resours/head/4.png"))
+        self.label_13.setPixmap(QtGui.QPixmap("../data/resours/head/4.png"))
+        self.thread_voice_assistant.set_voice_assistant(1)
 
     def two_avatar(self):
-        self.label_13.setPixmap(QtGui.QPixmap("resours/head/1.png"))
+        self.label_13.setPixmap(QtGui.QPixmap("../data/resours/head/1.png"))
+        self.thread_voice_assistant.set_voice_assistant(1)
 
     def three_avatar(self):
-        self.label_13.setPixmap(QtGui.QPixmap("resours/head/3.png"))
+        self.label_13.setPixmap(QtGui.QPixmap("../data/resours/head/3.png"))
+        self.thread_voice_assistant.set_voice_assistant(0)
 
     def four_avatar(self):
-        self.label_13.setPixmap(QtGui.QPixmap("resours/head/2.png"))
+        self.label_13.setPixmap(QtGui.QPixmap("../data/resours/head/2.png"))
+        self.thread_voice_assistant.set_voice_assistant(0)
 
     def close_avatar(self):
         self.label_13.setPixmap(QtGui.QPixmap(""))
@@ -282,35 +231,32 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # @pyqtSlot()
     def send(self):
-
         self.textBrowser.append("Ваша команда: " + self.textEdit.toPlainText())
-
-        # self.start_speak_assistant("Выполняю")
         result = va_respond(self.textEdit.toPlainText())
 
         # удаление текста после отправки сообщения
         self.textEdit.clear()
-
         self.command_execution(result)
-
-
 
     def start_voice_input(self):
         self.start_speak_assistant("Говоритее")
         self.thread_voice.handler_status = True
-        # self.thread_voice.stream.start_stream() - ФИКСИТЬ
+
+        # Попытка оптимизации
+        # self.thread_voice.stream.start_stream()
+
         self.thread_voice.start()
-        # self.textBrowser.clear()
 
+    @QtCore.pyqtSlot(list)
     def signal_handler(self, voice_command):
-        # self.start_speak_assistant(voice_command[0])
-
         self.textBrowser.append("Ваша команда: " + voice_command[0])
         self.thread_voice.handler_status = False
-        # self.thread_voice.stream.stop_stream() - ВОТ ЭТО НУЖНО БУДЕТ ОТФИКСИТЬ
+
+        # Попытка оптимизации
+        # self.thread_voice.stream.stop_stream()
+
         self.thread_voice.exit()
 
-        # self.start_speak_assistant("Выполняю")
         result = va_respond(voice_command[0])
         self.command_execution(result)
 
@@ -318,9 +264,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.thread_voice_assistant.set_text_say(text)
         self.thread_voice_assistant.start()
         self.thread_voice_assistant.exit()
-
-        # pass
-        # self.thread_voice_assistant.stop() - ХЗ ВЫХОД ИЛИ СТОП
 
     def command_execution(self, result):
         if result[0] in [0, 3]:
@@ -337,6 +280,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif result[0] in [1, 2, 5]:
             self.start_speak_assistant(result[1])
             self.textBrowser.append(result[2])
+
+        # Для записи в заметки
+        # else:
+        #     text, ok = QInputDialog.getText(self, 'Ввод заметки',
+        #                                     'Введите ваш текст для дальнейшего сохранения '
+        #                                     'его в файле "Заметки от VirtA.txt".')
+        #     if ok:
+        #         if text:
+        #             Funct.text_temp = text
+        #         else:
+        #             print('Вы ничего не ввели')
+        #     else:
+        #         print('Отмена операции')
 
         self.textBrowser.append("-----------")
 

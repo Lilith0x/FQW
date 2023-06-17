@@ -71,7 +71,7 @@ def execute_cmd(cmd: str):
         now = datetime.datetime.now()
         text = "Сейчас " + num2words(now.hour, lang='ru') + " " + num2words(now.minute, lang="ru")
         # print(text)
-        text_2 = now
+        text_2 = "Сегодня: " + f'{now.day}-{now.month}-{now.year}'
 
         return [2, text, str(text_2)]
         # tts.Voice.va_speak(text)
