@@ -10,7 +10,7 @@ from PyQt5 import QtGui, QtWidgets, QtCore
 from src.ui.clientui import Ui_MainWindow
 from src.functions.voice_input import VoiceInputThread
 from src.functions.voice_assistant import VoiceAssistantThread
-from src.functions.functions import va_respond
+from src.functions.functions import va_respond, clear_text, intent_rec
 from src.functions.hotkeys import HotKeysSettingsThread, HotKeysThread
 
 
@@ -66,7 +66,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_6.clicked.connect(self.close_avatar)
 
         # Старт
-        self.textBrowser.append(f"{config.VA_NAME} (v{config.VA_VER}) начал свою работу ..." + "\n")
+        self.textBrowser.append("Вирта 0.2 начал свою работу ..." + "\n")
         self.start_speak_assistant(f"Здравствуйте! Меня зовут Виртаа")
 
         self.textEdit.installEventFilter(self)  # Для ввода Enter
@@ -89,7 +89,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # self.startButton.clicked.connect(self.start_program)
         # self.start_program()
-        self.thread_hotkeys = HotKeysThread(self, config.VA_HOT_KEYS)
+        self.thread_hotkeys = HotKeysThread(self, ['ctrl+q', 'ctrl+w', 'ctrl+e'])
         self.thread_hotkeys.start()
         # self.thread_hotkeys.exit()
 
@@ -172,7 +172,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def read_file_hotkeys(self):
         k = 0
         # self.button_list = config.VA_HOT_KEYS
-        for key in config.VA_HOT_KEYS:
+        for key in ['ctrl+q', 'ctrl+w', 'ctrl+e']:
             self.button_list[k].setText(key)
             # self.lineEdit_list[k].setText(value)
             k += 1
@@ -221,7 +221,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.textEdit.clear()
 
     def start_voice_input(self):
-        self.start_speak_assistant("Говоритее")
+        self.start_speak_assistant("Говорите")
         self.thread_voice.handler_status = True
         # self.thread_voice.stream.start_stream() - ФИКСИТЬ
         self.thread_voice.start()
@@ -267,6 +267,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 if __name__ == "__main__":
+    # print(va_respond('пожалуйста, скажи время'))
     app = QtWidgets.QApplication([])
     window = MainWindow()
     window.show()

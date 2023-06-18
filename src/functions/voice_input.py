@@ -8,6 +8,7 @@ class VoiceInputThread(QtCore.QThread):
     signal = QtCore.pyqtSignal(list)
     handler_status = True
     model = Model("../../models/voice_recognition_small_rus")
+
     # model = Model("..//models//voice_recognition_small_rus")
     rec = KaldiRecognizer(model, 16000)
     pA = pyaudio.PyAudio()
@@ -18,24 +19,21 @@ class VoiceInputThread(QtCore.QThread):
 
     def run(self):
 
-
         while True:
             try:
                 if self.handler_status:
                     try:
-                        # stream.start_stream() - ОТФИКСИТЬ
+                        # stream.start_stream() - Попытка оптимизировать
                         data = VoiceInputThread.stream.read(4000, exception_on_overflow=False)
-                        if (VoiceInputThread.rec.AcceptWaveform(data) and len(data) > 0):
+                        if VoiceInputThread.rec.AcceptWaveform(data) and len(data) > 0:
                             answer = json.loads(VoiceInputThread.rec.Result())['text']
-                            # print(answer)
-                            # ret_answer = answer
                             self.signal.emit([answer])
 
                     except Exception as err:
-                        print(str(err))
-
+                        self.signal.emit(['Ошибка распознавания. Попробуй проверить микрофон'])
                 else:
                     break
+
             except Exception as err:
-                self.signal.emit('Ошибка распознавания')
+                self.signal.emit(['Ошибка распознавания. Попробуй проверить микрофон'])
                 break
