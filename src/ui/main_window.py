@@ -3,6 +3,10 @@ import easygui
 from fuzzywuzzy import fuzz
 
 
+from src.functions.intent_classifier import IntentClassifier
+
+import set_config
+
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction, qApp, QDialogButtonBox, QMessageBox, QInputDialog
 from PyQt5 import QtGui, QtWidgets, QtCore
@@ -10,7 +14,9 @@ from PyQt5 import QtGui, QtWidgets, QtCore
 from src.ui.clientui import Ui_MainWindow
 from src.functions.voice_input import VoiceInputThread
 from src.functions.voice_assistant import VoiceAssistantThread
+
 from src.functions.functions_assistant import FunctionsAssistantThread
+
 from src.functions.hotkeys import HotKeysSettingsThread, HotKeysThread
 import set_config
 
@@ -68,10 +74,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_11.clicked.connect(self.four_avatar)
         self.pushButton_6.clicked.connect(self.close_avatar)
 
+        # Подключение модели распознавания
+
+        self.nlu = IntentClassifier()
+
+
         # Приветствие
-        self.textBrowser.append(
-            f"{self.settings_config['VirtA']['VA_NAME']} (v{self.settings_config['VirtA']['VA_VER']}) начал свою работу ..." + "\n")
-        self.start_speak_assistant(f"Здравствуйте! Меня зовут Виртаа")
+        # Закомменчено, чтобы приложение запускалось
+        # self.textBrowser.append(
+        #     f"{self.settings_config['VirtA']['VA_NAME']} (v{self.settings_config['VirtA']['VA_VER']}) начал свою работу ..." + "\n")
+        # self.start_speak_assistant(f"Здравствуйте! Меня зовут Виртаа")
 
         # Попытка добавить для текстового ввода - Enter
         # self.textEdit.installEventFilter(self)  # Для ввода Enter
@@ -87,6 +99,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.button_list[button].clicked.connect(self.on_hotkey_click)
 
         self.thread_hotkeys = HotKeysThread(self)
+
 
         self.buttonBox.button(QtWidgets.QDialogButtonBox.Save).clicked.connect(self.save_hotkey)
 
@@ -106,6 +119,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Подключение функционала самого помощника
         self.thread_functions = FunctionsAssistantThread()
         self.thread_functions.signal_result.connect(self.command_execution)
+
 
     # Попытка добавить для текстового ввода - Enter
     # def eventFilter(self, obj, event):
@@ -147,6 +161,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.check_turn_hotkeys == 1:
             self.start_hotkeys()
 
+
     def save_hotkey(self):
         if self.check_turn_hotkeys == 1:
             self.thread_hotkeys.remove_hotkeys(self.thread_hk_settings.hotkeys_button)
@@ -187,6 +202,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.settings_config.write(configfile)
 
         self.settings_config.read('../data/config/settings.ini', encoding='utf-8')
+
 
 
     def show_close_avatar_hotkeys(self):
@@ -256,6 +272,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.command_execution(result)
 
     def start_voice_input(self):
+
         if self.check_turn_hotkeys == 1:
             self.thread_hotkeys.remove_hotkeys(self.thread_hk_settings.hotkeys_button)
         # if self.block_voice_input:
@@ -359,11 +376,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # if command.startswith(config.VA_ALIAS) or True:
         # обращаются к ассистенту
-        cmd = self.recognize_cmd(self.filter_cmd(command))
+
+        intent = self.nlu.clear_text(command)
+        cmd = self.nlu.get_intent(intent)
+        # print(type(intent))
+        # cmd = self.nlu.VA_CMD_LIST.get(intent)
+
+        # cmd = self.recognize_cmd(self.filter_cmd(command))
         # if cmd['cmd'] not in set_config.VA_CMD_LIST.keys():
         #     return [-1, "Я не поняла вас"]
         # else:
-        return self.execute_cmd(cmd['cmd'], command)
+        return self.execute_cmd(cmd, command)
 
         # else:
         #     return [0, "Я не поняла вас"]
@@ -416,32 +439,32 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # return [0]
 
-    def filter_cmd(self, raw_voice: str):
-        cmd = raw_voice
-
-        for x in set_config.VA_ALIAS:
-            cmd = cmd.replace(x, "").strip()
-
-        for x in set_config.VA_TBR:
-            cmd = cmd.replace(x, "").strip()
-        return cmd
-
-    def recognize_cmd(self, cmd: str):
-        rc = {'cmd': '', 'percent': 70}
-        for c, v in set_config.VA_CMD_LIST.items():
-
-            for x in v:
-                vrt = fuzz.ratio(cmd, x)
-                # print(x + ' = ' + str(vrt))
-                if vrt > rc['percent']:
-                    # print('test' + x + ' = ' + str(vrt))
-                    rc['cmd'] = c
-                    rc['percent'] = vrt
-
-        if rc['percent'] <= 70:
-            rc['cmd'] = -1
-
-        return rc
+    # def filter_cmd(self, raw_voice: str):
+    #     cmd = raw_voice
+    #
+    #     for x in set_config.VA_ALIAS:
+    #         cmd = cmd.replace(x, "").strip()
+    #
+    #     for x in set_config.VA_TBR:
+    #         cmd = cmd.replace(x, "").strip()
+    #     return cmd
+    #
+    # def recognize_cmd(self, cmd: str):
+    #     rc = {'cmd': '', 'percent': 70}
+    #     for c, v in set_config.VA_CMD_LIST.items():
+    #
+    #         for x in v:
+    #             vrt = fuzz.ratio(cmd, x)
+    #             # print(x + ' = ' + str(vrt))
+    #             if vrt > rc['percent']:
+    #                 # print('test' + x + ' = ' + str(vrt))
+    #                 rc['cmd'] = c
+    #                 rc['percent'] = vrt
+    #
+    #     if rc['percent'] <= 70:
+    #         rc['cmd'] = -1
+    #
+    #     return rc
 
     # Если окно свернуто и не в фокусе
     def show_focus_window(self):
@@ -525,3 +548,4 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 #     window = MainWindow()
 #     window.show()
 #     app.exec_()
+
