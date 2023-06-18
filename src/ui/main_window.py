@@ -1,9 +1,13 @@
 import threading
 import time
+from configparser import ConfigParser
+
+import easygui
 import keyboard
 from PyQt5.QtCore import pyqtSlot
+from fuzzywuzzy import fuzz
 
-import config
+import set_config
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction, qApp, QDialogButtonBox, QMessageBox, QInputDialog
@@ -12,7 +16,7 @@ from PyQt5 import QtGui, QtWidgets, QtCore
 from src.ui.clientui import Ui_MainWindow
 from src.functions.voice_input import VoiceInputThread
 from src.functions.voice_assistant import VoiceAssistantThread
-from src.functions.functions import va_respond
+from src.functions.functions_assistant import FunctionsAssistantThread
 from src.functions.hotkeys import HotKeysSettingsThread, HotKeysThread
 
 
@@ -49,6 +53,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.tray_icon.().
 
         # поток для голосового ввода
+        # self.block_voice_input = True
         self.thread_voice = VoiceInputThread()
         self.thread_voice.signal.connect(self.signal_handler)
 
@@ -67,7 +72,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_11.clicked.connect(self.four_avatar)
         self.pushButton_6.clicked.connect(self.close_avatar)
 
-        # Старт
+        # Приветствие
         self.textBrowser.append(
             f"{self.settings_config['VirtA']['VA_NAME']} (v{self.settings_config['VirtA']['VA_VER']}) начал свою работу ..." + "\n")
         self.start_speak_assistant(f"Здравствуйте! Меня зовут Виртаа")
@@ -102,10 +107,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.check_tray_hk = 1
         self.check_avatar_hk = 1
 
-        QInputDialog.getText(self, 'Ввод заметки',
-                                            'Введите ваш текст для дальнейшего сохранения '
-                                            'его в файле "Заметки от VirtA.txt".')
-
+        # Подключение функционала самого помощника
+        self.thread_functions = FunctionsAssistantThread()
+        self.thread_functions.signal_result.connect(self.command_execution)
 
     # Попытка добавить для текстового ввода - Enter
     # def eventFilter(self, obj, event):
@@ -159,15 +163,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             QMessageBox.warning(self, "Ошибка", "У вас есть одинаковые сочетания")
 
-
         if self.check_turn_hotkeys == 1:
             self.start_hotkeys()
 
         self.settings_config["Hotkeys"]["hotkey_1"] = self.thread_hk_settings.hotkeys_button[0]
         self.settings_config["Hotkeys"]["hotkey_2"] = self.thread_hk_settings.hotkeys_button[1]
         self.settings_config["Hotkeys"]["hotkey_3"] = self.thread_hk_settings.hotkeys_button[2]
-        with open("../data/config/settings.ini", 'w') as configfile:
+        with open("../data/config/settings.ini", 'w', encoding='utf-8') as configfile:
             self.settings_config.write(configfile)
+
+        # self.settings_config = ConfigParser()
+        self.settings_config.read('../data/config/settings.ini', encoding='utf-8')
 
     def turn_hotkey(self):
         if self.check_turn_hotkeys == 0:
@@ -181,8 +187,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.check_turn_hotkeys = 0
 
         self.settings_config["Hotkeys"]["turn_on_off"] = str(self.check_turn_hotkeys)
-        with open("../data/config/settings.ini", 'w') as configfile:
+        with open("../data/config/settings.ini", 'w', encoding='utf-8') as configfile:
             self.settings_config.write(configfile)
+
+        self.settings_config.read('../data/config/settings.ini', encoding='utf-8')
+
 
     def show_close_avatar_hotkeys(self):
         if self.check_avatar_hk == 1:
@@ -231,14 +240,30 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # @pyqtSlot()
     def send(self):
+        if self.check_turn_hotkeys == 1:
+            self.thread_hotkeys.remove_hotkeys(self.thread_hk_settings.hotkeys_button)
         self.textBrowser.append("Ваша команда: " + self.textEdit.toPlainText())
-        result = va_respond(self.textEdit.toPlainText())
+
+        # Здесь обработку -1
+        # self.va_respond(self.textEdit.toPlainText().lower())
+        self.va_respond(str(self.textEdit.toPlainText()).lower())
+        #
+        # result = self.va_respond(str(self.textEdit.toPlainText()).lower())
+        # if result[0] == -1:
+        #     self.textBrowser.append(result[1])
+        #     self.start_speak_assistant(result[1])
+        # # elif result[0] == 1:
+        # self.command_execution(result)
 
         # удаление текста после отправки сообщения
         self.textEdit.clear()
-        self.command_execution(result)
+        # self.command_execution(result)
 
     def start_voice_input(self):
+        if self.check_turn_hotkeys == 1:
+            self.thread_hotkeys.remove_hotkeys(self.thread_hk_settings.hotkeys_button)
+        # if self.block_voice_input:
+        #     self.block_voice_input = False
         self.start_speak_assistant("Говоритее")
         self.thread_voice.handler_status = True
 
@@ -249,53 +274,259 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     @QtCore.pyqtSlot(list)
     def signal_handler(self, voice_command):
-        self.textBrowser.append("Ваша команда: " + voice_command[0])
+
+        self.textBrowser.append("Ваша команда: " + voice_command[1])
         self.thread_voice.handler_status = False
 
         # Попытка оптимизации
         # self.thread_voice.stream.stop_stream()
 
         self.thread_voice.exit()
+        if voice_command[0] == 1:
 
-        result = va_respond(voice_command[0])
-        self.command_execution(result)
+            # Здесь обработку -1
+            # self.va_respond(self.textEdit.toPlainText().lower())
+
+            self.va_respond(voice_command[1])
+            #
+            # result = self.va_respond(voice_command[1])
+            # #
+            # if result[0] == -1:
+            #     self.textBrowser.append(result[1])
+            #     self.start_speak_assistant(result[1])
+            # # # elif result[0] == 1:
+            #
+            # self.command_execution(result)
+
+        elif voice_command[0] == -1:
+            self.textBrowser.append(voice_command[1])
+        # self.block_voice_input = True
 
     def start_speak_assistant(self, text):
         self.thread_voice_assistant.set_text_say(text)
         self.thread_voice_assistant.start()
         self.thread_voice_assistant.exit()
 
+    @QtCore.pyqtSlot(list)
     def command_execution(self, result):
-        if result[0] in [0, 3]:
+        # if result[0] in [0, 3]:
+        #     self.start_speak_assistant(result[1])
+        #     self.textBrowser.append(result[1])
+        #
+        # # if result[1] == :
+        # #     self.start_speak_assistant(result[1])
+        #
+        # elif result[0] == 4:
+        #     self.start_speak_assistant('Открываю браузер')
+        #     # self.textBrowser.append(result[1])
+        #
+        # elif result[0] in [1, 2, 5]:
+        #     self.start_speak_assistant(result[1])
+        #     self.textBrowser.append(result[2])
+
+        # if result[0] == 1:
+        #     pass
+        print(result)
+        if result[0] == -1:
             self.start_speak_assistant(result[1])
             self.textBrowser.append(result[1])
 
-        # if result[1] == :
-        #     self.start_speak_assistant(result[1])
+        elif result[0] == 0:
+            self.show_focus_window()
+            text, ok = QInputDialog.getText(self, 'Настройки',
+                                            'Введите номер пункта, который хотите настроить:\n'
+                                            '1. Добавить файл в быстрый доступ;\n'
+                                            '2. Добавить папку в быстрый доступ;\n'
+                                            '3. Добавить сайт в быстрый доступ.')
+            if text and ok:
+                if text == '1':
+                    self.add_file()
+                elif text == '2':
+                    self.add_dir()
+                elif text == '3':
+                    self.add_site()
+                else:
+                    QMessageBox.warning(self, "Ошибка", "Нет такого пунтка")
 
-        elif result[0] == 4:
-            self.start_speak_assistant('Открываю браузер')
-            # self.textBrowser.append(result[1])
+                self.settings_config.read('../data/config/settings.ini', encoding='utf-8')
 
-        elif result[0] in [1, 2, 5]:
+            else:
+                QMessageBox.warning(self, "Ошибка", "Отмена операции")
+
+
+        else:
             self.start_speak_assistant(result[1])
             self.textBrowser.append(result[2])
 
-        # Для записи в заметки
-        # else:
-        #     text, ok = QInputDialog.getText(self, 'Ввод заметки',
-        #                                     'Введите ваш текст для дальнейшего сохранения '
-        #                                     'его в файле "Заметки от VirtA.txt".')
-        #     if ok:
-        #         if text:
-        #             Funct.text_temp = text
-        #         else:
-        #             print('Вы ничего не ввели')
-        #     else:
-        #         print('Отмена операции')
-
         self.textBrowser.append("-----------")
+        if self.check_turn_hotkeys == 1:
+            self.start_hotkeys()
 
+    def va_respond(self, command):
+
+        # if command.startswith(config.VA_ALIAS) or True:
+        # обращаются к ассистенту
+        cmd = self.recognize_cmd(self.filter_cmd(command))
+        # if cmd['cmd'] not in set_config.VA_CMD_LIST.keys():
+        #     return [-1, "Я не поняла вас"]
+        # else:
+        return self.execute_cmd(cmd['cmd'], command)
+
+        # else:
+        #     return [0, "Я не поняла вас"]
+        # stt.Speach.test = False
+
+    def execute_cmd(self, choice, request):
+        print(choice)
+        choice = int(choice)
+
+        if choice in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
+            self.thread_functions.choice_funct = choice
+
+            if choice in [7, 8, 9]:
+                self.thread_functions.data_file = self.settings_config
+                self.thread_functions.name_open_thing = request
+
+            elif choice == 10:
+                self.show_focus_window()
+
+                text, ok = QInputDialog.getText(self, 'Ввод заметки',
+                                                'Введите ваш текст для дальнейшего сохранения '
+                                                'его в файле "Заметки от VirtA.txt".')
+
+                if ok and text:
+                    self.thread_functions.text_temp = text
+                else:
+                    QMessageBox.warning(self, "Ошибка", "Отмена операции")
+
+                # self.thread_functions.text_temp = None
+            self.thread_functions.start()
+
+        elif choice == 11:
+            self.start_speak_assistant(f"Здравствуйте! Меня зовут Виртаа")
+            if self.check_turn_hotkeys == 1:
+                self.start_hotkeys()
+            self.textBrowser.append("-----------")
+
+
+        elif choice == 12:
+            self.start_speak_assistant(f"До свидания")
+            time.sleep(3)
+            self.close()
+
+        elif choice == -1:
+            self.textBrowser.append("Я не поняла вас")
+            self.start_speak_assistant("Я не поняла вас")
+            if self.check_turn_hotkeys == 1:
+                self.start_hotkeys()
+            self.textBrowser.append("-----------")
+
+        # return [0]
+
+    def filter_cmd(self, raw_voice: str):
+        cmd = raw_voice
+
+        for x in set_config.VA_ALIAS:
+            cmd = cmd.replace(x, "").strip()
+
+        for x in set_config.VA_TBR:
+            cmd = cmd.replace(x, "").strip()
+        return cmd
+
+    def recognize_cmd(self, cmd: str):
+        rc = {'cmd': '', 'percent': 70}
+        for c, v in set_config.VA_CMD_LIST.items():
+
+            for x in v:
+                vrt = fuzz.ratio(cmd, x)
+                # print(x + ' = ' + str(vrt))
+                if vrt > rc['percent']:
+                    # print('test' + x + ' = ' + str(vrt))
+                    rc['cmd'] = c
+                    rc['percent'] = vrt
+
+        if rc['percent'] <= 70:
+            rc['cmd'] = -1
+
+        return rc
+
+    # Если окно свернуто и не в фокусе
+    def show_focus_window(self):
+        self.show()
+        self.activateWindow()
+
+    def add_file(self):
+        choice_dir = easygui.fileopenbox()
+
+        if choice_dir != None:
+            text, ok = QInputDialog.getText(self, 'Ввод команды',
+                                            'Введите команду для открытия файла:')
+
+            if ok and text:
+                # self.path[text] = f'{choice_dir}'
+
+                self.settings_config["PathFile"][text.lower()] = choice_dir
+                with open("../data/config/settings.ini", 'w', encoding='utf-8') as configfile:
+                    self.settings_config.write(configfile)
+
+                # self.count += 1
+                # text = str(text).lower()
+                # self.table.setRowCount(self.count)
+                # self.table.setItem(self.count - 1, 0, QTableWidgetItem(f"{text}"))
+                # self.table.setItem(self.count - 1, 1, QTableWidgetItem(f"{choice_dir}"))
+
+
+                QMessageBox.about(self, "Успешно", "Файл успешно добавлен в быстрый доступ.")
+            else:
+                QMessageBox.warning(self, "Ошибка", "Отмена операции")
+        else:
+            QMessageBox.warning(self, "Ошибка", "Вы не выбрали файл")
+
+    def add_dir(self):
+        choice_dir = easygui.diropenbox()
+
+        if choice_dir != None:
+            text, ok = QInputDialog.getText(self, 'Ввод команды',
+                                            'Введите команду для открытия папки:')
+
+            if ok and text:
+                # self.path[text] = f'{choice_dir}'
+
+                self.settings_config["PathDirectory"][text.lower()] = choice_dir
+                with open("../data/config/settings.ini", 'w', encoding='utf-8') as configfile:
+                    self.settings_config.write(configfile)
+                # self.count += 1
+                # text = str(text).lower()
+                # self.table.setRowCount(self.count)
+                # self.table.setItem(self.count - 1, 0, QTableWidgetItem(f"{text}"))
+                # self.table.setItem(self.count - 1, 1, QTableWidgetItem(f"{choice_dir}"))
+                QMessageBox.about(self, "Успешно", "Папка успешно добавлена в быстрый доступ.")
+            else:
+                QMessageBox.warning(self, "Ошибка", "Отмена операции")
+        else:
+            QMessageBox.warning(self, "Ошибка", "Вы не выбрали папку")
+
+    def add_site(self):
+        text, ok = QInputDialog.getText(self, 'Ввод сайта',
+        'Введите адрес сайта, который хотите добавить в быстрый доступ:')
+
+        if ok and text:
+            site = text
+            text, ok = QInputDialog.getText(self, 'Ввод команды',
+                                            'Введите команду для открытия сайта:')
+            if ok and text:
+
+                self.settings_config["Site"][text.lower()] = site
+                with open("../data/config/settings.ini", 'w', encoding='utf-8') as configfile:
+                    self.settings_config.write(configfile)
+
+                QMessageBox.about(self, "Успешно", "Сайт успешно добавлен в быстрый доступ.")
+
+            else:
+                QMessageBox.warning(self, "Ошибка", "Отмена операции")
+
+        else:
+            QMessageBox.warning(self, "Ошибка", "Отмена операции")
 # if __name__ == "__main__":
 #     app = QtWidgets.QApplication([])
 #     window = MainWindow()

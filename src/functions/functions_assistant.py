@@ -3,6 +3,7 @@ import os
 import pickle
 import re
 import webbrowser
+from configparser import ConfigParser
 
 import requests
 from PyQt5 import QtCore
@@ -16,37 +17,49 @@ class FunctionsAssistantThread(QtCore.QThread):
     signal_result = QtCore.pyqtSignal(list)
     choice_funct = None
     text_temp = None
+    data_file = None
+    name_open_thing = None
 
     def run(self):
-        if FunctionsAssistantThread.choice_funct == 0:
+
+        if self.choice_funct == 0:
             self.setting()
 
-        elif FunctionsAssistantThread.choice_funct == 1:
+        elif self.choice_funct == 1:
             self.say_help()
 
-        elif FunctionsAssistantThread.choice_funct == 2:
+        elif self.choice_funct == 2:
             self.say_time()
 
-        elif FunctionsAssistantThread.choice_funct == 3:
+        elif self.choice_funct == 3:
             self.open_browser()
 
-        elif FunctionsAssistantThread.choice_funct == 4:
+        elif self.choice_funct == 4:
+            self.say_system()
+
+        elif self.choice_funct == 5:
             self.say_weather_city(0)
 
-        elif FunctionsAssistantThread.choice_funct == 5:
+        elif self.choice_funct == 6:
             self.say_weather_city(1)
 
-        elif FunctionsAssistantThread.choice_funct == 6:
-            pass
+        elif self.choice_funct == 7:
+            self.open_file_dir_site(0)
 
-        elif FunctionsAssistantThread.choice_funct == 7:
-            self.write_file_text(FunctionsAssistantThread.text_temp)
+        elif self.choice_funct == 8:
+            self.open_file_dir_site(1)
+
+        elif self.choice_funct == 9:
+            self.open_file_dir_site(2)
+
+        elif self.choice_funct == 10:
+            self.write_file_text(self.text_temp)
 
     def setting(self):
         # добавлять папку, сайт или файл
         # если успею сделать имя пользователя и имя вирты - но на крайний случай,
         # так как это не используется в самом приложении
-
+        self.signal_result.emit([0])
         pass
 
     def say_help(self):
@@ -68,39 +81,40 @@ class FunctionsAssistantThread(QtCore.QThread):
         text_2 += "6) записать что-нибудь в текстовый файл \n"
         text_2 += "7) открывать браузер."
 
-        return [1, text, text_2]
+        self.signal_result.emit([1, text, text_2])
 
     def say_time(self):
         now = datetime.now()
-        text = "Сейчас " + num2words(now.hour, lang='ru') + " " + num2words(now.minute, lang="ru")
+        text_say = "Сейчас " + num2words(now.hour, lang='ru') + " " + num2words(now.minute, lang="ru")
         # print(text)
-        text_2 = "Сегодня: " + f'{now.day}-{now.month}-{now.year} {now.hour}:{now.minute}'
-        self.signal_result.emit([2, text, str(text_2)])
+        text = "Сегодня: " + f'{now.day}-{now.month}-{now.year} {now.hour}:{now.minute}'
+        self.signal_result.emit([2, text_say, str(text)])
 
     def open_browser(self):
         url = "https://ya.ru/"
         # url = "https://about:blank"
         webbrowser.open(url)
+        self.signal_result.emit([3, "Выполняю", "Выполняю"])
 
     def say_system(self):
-        text = "Вывожу информацию о вашей системе"
+        text_say = "Вывожу информацию о вашей системе"
         sys = platform.uname()
-        text_2 = "Информация о системе:\n" \
-                 f"    Имя системы/OS - {sys[0]}\n" \
-                 f"    Сетевое имя компьютера - {sys[1]}\n" \
-                 f"    Выпуск системы - {sys[2]}\n" \
-                 f"    Версия выпуска системы - {sys[3]}\n" \
-                 f"    Тип машины - {sys[4]}\n" \
-                 f"    Имя процессора - {sys[5]}"
+        text = "Информация о системе:\n" \
+               f"    Имя системы/OS - {sys[0]}\n" \
+               f"    Сетевое имя компьютера - {sys[1]}\n" \
+               f"    Выпуск системы - {sys[2]}\n" \
+               f"    Версия выпуска системы - {sys[3]}\n" \
+               f"    Тип машины - {sys[4]}\n" \
+               f"    Имя процессора - {sys[5]}"
 
-        self.signal_result.emit([5, text, text_2])
+        self.signal_result.emit([4, text_say, text])
 
     def say_weather_city(self, choi):
         try:
             send_url = "http://api.ipstack.com/check?access_key=c024957c288f813bf6f290a7182aa3d7"
             geo_req = requests.get(send_url)
             geo_json = json.loads(geo_req.text)
-            print(geo_json)
+            # print(geo_json)
             # text = None
             if choi == 0:
                 # Тут
@@ -111,7 +125,8 @@ class FunctionsAssistantThread(QtCore.QThread):
                     text = f"Ваше примерное местоположение - {locat_data}"
                 else:
                     text = f"{geo_json[0]}"
-                self.signal_result.emit([5, text])
+
+                self.signal_result.emit([5, "Выполняю", text])
 
             elif choi == 1:
                 city_id = geo_json["location"]["geoname_id"]
@@ -135,7 +150,7 @@ class FunctionsAssistantThread(QtCore.QThread):
                     else:
                         text = f"{data[0]}"
 
-                    self.signal_result.emit([4, text_say, text])
+                    self.signal_result.emit([6, text_say, text])
 
 
                 except:
@@ -145,21 +160,41 @@ class FunctionsAssistantThread(QtCore.QThread):
             self.signal_result.emit([-1, "Похоже нет доступа к сети.\n"
                                          "Попробуйте позже."])
 
-    def open_file_dir_cite(self, choi, name_open_thing):
+    def open_file_dir_site(self, choi):
+        data_file = self.data_file
+        open_thing = self.name_open_thing
+
+        check = 0
         if choi == 0:
-            pass
-            # with open("Pickle/path_base_win.pickle", "rb") as f:
-            #     path = pickle.load(f)
-            # for i in path:
-            #     i = r"\b" + f"{i}" + r"\b"
-            #     i = re.search(i, result)
-            #     if i:
-            #         os.startfile(path[i[0]])
-            # return 0
-            # self.textEdit.setText("- Такой папки/файла нет.")
+            for i in data_file["PathFile"]:
+                if i in open_thing:
+                    os.startfile(data_file['PathFile'][i])
+                    check = 1
+                    self.signal_result.emit([7, "Выполняю", "Выполняю"])
+
+            if check == 0:
+                self.signal_result.emit([-1, "Я не знаю такого файла"])
 
         elif choi == 1:
-            pass
+            for i in data_file["PathDirectory"]:
+                if i in open_thing:
+                    os.startfile(data_file['PathDirectory'][i])
+                    check = 1
+                    self.signal_result.emit([8, "Выполняю", "Выполняю"])
+
+            if check == 0:
+                self.signal_result.emit([-1, "Я не знаю такой папки"])
+
+        elif choi == 2:
+            for i in data_file['Site']:
+                if i in open_thing:
+                    webbrowser.open(data_file['Site'][i])
+                    check = 1
+                    self.signal_result.emit([9, "Выполняю", "Выполняю"])
+
+            if check == 0:
+                self.signal_result.emit([-1, "Я не знаю такого сайта"])
+
             # with open("Pickle/site_base.pickle", "rb") as f:
             #     data_site = pickle.load(f)
             #
@@ -174,19 +209,31 @@ class FunctionsAssistantThread(QtCore.QThread):
             # self.textEdit.setText("- Я не знаю такого сайта")
 
     def write_file_text(self, text):
-        write_text = str(text)
+        if text:
+            write_text = str(text)
 
-        now = datetime.now()
-        data_write_text = f"{now.day}-{now.month}-{now.year} {now.hour}:{now.minute}\n"
-        data_write_text += write_text
-        data_write_text += "\n"
-        data_write_text += "------------------------------"
-        data_write_text += "\n"
+            now = datetime.now()
+            data_write_text = f"{now.day}-{now.month}-{now.year} {now.hour}:{now.minute}\n"
+            data_write_text += write_text
+            data_write_text += "\n"
+            data_write_text += "------------------------------"
+            data_write_text += "\n"
 
-        with open("Заметки от VirtA.txt", "a", encoding="utf-8") as file:
-            file.write(data_write_text)
+            with open("Заметки от VirtA.txt", "a", encoding="utf-8") as file:
+                file.write(data_write_text)
+
+        self.signal_result.emit([10, 'Выполняю', "Выполняю"])
 
 
-test = FunctionsAssistantThread()
-FunctionsAssistantThread.choice_funct = 0
-test.run()
+# test = FunctionsAssistantThread()
+# test.choice_funct = 9
+# # test.
+# test.run()
+
+# config = ConfigParser()
+# config.read('../../data/config/settings.ini', encoding='utf-8')
+# #
+# print(config['PathFile']['заметки'])
+# # for i in config['Site']:
+# #     print(config['Site'][i])
+# os.startfile(config['PathFile']['заметки'])

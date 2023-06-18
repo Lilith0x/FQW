@@ -1,5 +1,5 @@
 import platform
-import config
+import set_config
 from fuzzywuzzy import fuzz
 import datetime
 from num2words import num2words
@@ -9,39 +9,41 @@ import random
 
 def va_respond(command):
 
-    if command.startswith(config.VA_ALIAS) or True:
+    # if command.startswith(config.VA_ALIAS) or True:
         # обращаются к ассистенту
-        cmd = recognize_cmd(filter_cmd(command))
-        if cmd['cmd'] not in config.VA_CMD_LIST.keys():
-            return [0, "Я не поняла вас"]
-        else:
-            return execute_cmd(cmd['cmd'])
-
+    cmd = recognize_cmd(filter_cmd(command))
+    if cmd['cmd'] not in set_config.VA_CMD_LIST.keys():
+        return [-1, "Я не поняла вас"]
     else:
-        return [0, "Я не поняла вас"]
+        return execute_cmd(cmd['cmd'])
+
+    # else:
+    #     return [0, "Я не поняла вас"]
     # stt.Speach.test = False
 
 
 def filter_cmd(raw_voice: str):
     cmd = raw_voice
 
-    for x in config.VA_ALIAS:
+    for x in set_config.VA_ALIAS:
         cmd = cmd.replace(x, "").strip()
 
-    for x in config.VA_TBR:
+    for x in set_config.VA_TBR:
         cmd = cmd.replace(x, "").strip()
     return cmd
 
 
 def recognize_cmd(cmd: str):
-    rc = {'cmd': '', 'percent': 0}
-    for c, v in config.VA_CMD_LIST.items():
+    rc = {'cmd': '', 'percent': 70}
+    for c, v in set_config.VA_CMD_LIST.items():
 
         for x in v:
             vrt = fuzz.ratio(cmd, x)
             if vrt > rc['percent']:
                 rc['cmd'] = c
                 rc['percent'] = vrt
+            else:
+                rc['cmd'] = -1
 
     return rc
 
