@@ -1,13 +1,7 @@
-import threading
 import time
-from configparser import ConfigParser
-
 import easygui
-import keyboard
-from PyQt5.QtCore import pyqtSlot
 from fuzzywuzzy import fuzz
 
-import set_config
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction, qApp, QDialogButtonBox, QMessageBox, QInputDialog
@@ -18,6 +12,8 @@ from src.functions.voice_input import VoiceInputThread
 from src.functions.voice_assistant import VoiceAssistantThread
 from src.functions.functions_assistant import FunctionsAssistantThread
 from src.functions.hotkeys import HotKeysSettingsThread, HotKeysThread
+import set_config
+
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -280,13 +276,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Попытка оптимизации
         # self.thread_voice.stream.stop_stream()
-
         self.thread_voice.exit()
         if voice_command[0] == 1:
-
             # Здесь обработку -1
             # self.va_respond(self.textEdit.toPlainText().lower())
-
             self.va_respond(voice_command[1])
             #
             # result = self.va_respond(voice_command[1])
