@@ -18,35 +18,7 @@ import re
 from nltk.corpus import stopwords
 
 
-VA_CMD_LIST = {
-    1: 'привет',
-    2: 'пока',
-    3: 'открытие файла/приложения',
-    4: 'время',
-    5: 'открытие браузера',
-    6: 'анекдот',
-    7: 'функционал',
-    8: 'информация о системе',
-    9: 'местоположение',
-    10: 'погода',
-    11: 'открытие сайта',
-    12: 'открытие папки',
-    13: 'изменение названия файла',
-    14: 'изменение параметров',
 
-}
-
-# VA_CMD_LIST = {
-#     "help": ('список команд', 'команды', 'что ты умеешь', 'твои навыки', 'навыки'),
-#     "ctime": ('время', 'текущее время', 'сейчас времени', 'который час'),
-#     "joke": ('расскажи анекдот', 'рассмеши', 'шутка', 'расскажи шутку', 'пошути', 'развесели'),
-#     "system": ('моя система', 'система', 'какая у меня система'),
-#     "open_browser": ('открой браузер', 'запусти браузер', 'браузер')
-# }
-
-VA_ALIAS = ('вирта', 'вирт')
-
-VA_TBR = ('скажи', 'покажи', 'ответь', 'произнеси', 'расскажи', 'сколько')
 
 
 class IntentClassifier:
@@ -81,28 +53,7 @@ def va_respond(command):
     # stt.Speach.test = False
 
 
-def clear_text(text: str):
-    text = text.lower()
-    text = re.sub(r'[^а-яА-ЯёЁ ]', ' ', text)
-    text = ' '.join(text.split())
 
-
-    word_tokens = nltk.word_tokenize(text)
-    stop_words = set(stopwords.words("russian"))
-
-    new_stop_words = ['пожалуйста', 'вирта']
-
-    for i in new_stop_words:
-        stop_words.add(i)
-
-    filtered_sentence = []
-    for w in word_tokens:
-        if w not in stop_words:
-            filtered_sentence.append(w)
-
-    text = ' '.join(filtered_sentence)
-
-    return text
 
 
 # def filter_cmd(raw_voice: str):

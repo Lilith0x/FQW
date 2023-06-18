@@ -4,34 +4,71 @@ import numpy as np
 from tensorflow.python.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
+import nltk
+import re
+from nltk.corpus import stopwords
+
 
 class IntentClassifier:
-    def __init__(self,classes,model,tokenizer,label_encoder):
-        self.classes = classes
-        self.classifier = model
-        self.tokenizer = tokenizer
-        self.label_encoder = label_encoder
+    VA_CMD_LIST = {
+        11: 'привет',
+        12: 'пока',
+        7: 'открытие файла/приложения',
+        2: 'время',
+        6: 'открытие браузера',
+        1: 'функционал',
+        4: 'информация о системе',
+        5: 'местоположение',
+        6: 'погода',
+        9: 'открытие сайта',
+        8: 'открытие папки',
+        10: 'заметки',
+        0: 'изменение параметров',
+    }
+
+    def __init__(self):
+        self.classes = pickle.load(open('../models/intent_classifier/classes_CNN.pkl', 'rb'))
+        self.tokenizer = pickle.load(open('../models/intent_classifier/tokenizer_CNN.pkl', 'rb'))
+        self.label_encoder = pickle.load(open('../models/intent_classifier/label_encoder_CNN.pkl', 'rb'))
+        self.classifier = load_model('../models/intent_classifier/intents.h5')
+
+
+        # для запуска данного файла
+        # self.classes = pickle.load(open('../../models/intent_classifier/classes_CNN.pkl', 'rb'))
+        # self.tokenizer = pickle.load(open('../../models/intent_classifier/tokenizer_CNN.pkl', 'rb'))
+        # self.label_encoder = pickle.load(open('../../models/intent_classifier/label_encoder_CNN.pkl', 'rb'))
+        # self.classifier = load_model('../../models/intent_classifier/intents.h5')
 
     def get_intent(self,text):
         self.text = [text]
         self.test_keras = self.tokenizer.texts_to_sequences(self.text)
         self.test_keras_sequence = pad_sequences(self.test_keras, maxlen=16, padding='post')
         self.pred = self.classifier.predict(self.test_keras_sequence)
-        return label_encoder.inverse_transform(np.argmax(self.pred,1))[0]
+
+        return self.label_encoder.inverse_transform(np.argmax(self.pred,1))[0]
 
 
+    def clear_text(self,text: str):
+        text = text.lower()
+        text = re.sub(r'[^а-яА-ЯёЁ ]', ' ', text)
+        text = ' '.join(text.split())
 
-model = load_model('../../models/intent_classifier/intents.h5')
+        word_tokens = nltk.word_tokenize(text)
+        stop_words = set(stopwords.words("russian"))
 
-with open('../../models/intent_classifier/classes_CNN.pkl','rb') as file:
-  classes = pickle.load(file)
+        new_stop_words = ['пожалуйста', 'вирта']
 
-with open('../../models/intent_classifier/tokenizer_CNN.pkl','rb') as file:
-  tokenizer = pickle.load(file)
+        for i in new_stop_words:
+            stop_words.add(i)
 
-with open('../../models/intent_classifier/label_encoder_CNN.pkl','rb') as file:
-  label_encoder = pickle.load(file)
+        filtered_sentence = []
+        for w in word_tokens:
+            if w not in stop_words:
+                filtered_sentence.append(w)
 
-nlu = IntentClassifier(classes, model, tokenizer, label_encoder)
+        text = ' '.join(filtered_sentence)
 
-print(nlu.get_intent("покажи время"))
+        return text
+
+#nlu = IntentClassifier()
+#print(nlu.clear_text("Воыфлв игмшсщьббйцро"))
