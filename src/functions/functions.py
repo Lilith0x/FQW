@@ -1,5 +1,6 @@
 import platform
-# import src.config
+
+import set_config
 from fuzzywuzzy import fuzz
 import datetime
 from num2words import num2words
@@ -77,7 +78,6 @@ def va_respond(command):
     else:
         return [0, "Я не поняла вас"]
 
-
     # stt.Speach.test = False
 
 
@@ -85,6 +85,7 @@ def clear_text(text: str):
     text = text.lower()
     text = re.sub(r'[^а-яА-ЯёЁ ]', ' ', text)
     text = ' '.join(text.split())
+
 
     word_tokens = nltk.word_tokenize(text)
     stop_words = set(stopwords.words("russian"))
@@ -154,7 +155,7 @@ def execute_cmd(cmd: str):
         now = datetime.datetime.now()
         text = "Сейчас " + num2words(now.hour, lang='ru') + " " + num2words(now.minute, lang="ru")
         # print(text)
-        text_2 = now
+        text_2 = "Сегодня: " + f'{now.day}-{now.month}-{now.year}'
 
         return [2, text, str(text_2)]
         # tts.Voice.va_speak(text)
