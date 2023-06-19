@@ -129,7 +129,8 @@ class FunctionsAssistantThread(QThread):
                         text = text_say
                         text += f": {data['weather'][0]['description']},\n"
 
-                        text_say += f" {data['weather'][0]['description']}"
+                        text_say += f" {data['weather'][0]['description']} температура" \
+                                    f" {num2words(int(data['main']['temp']), lang='ru')} градусов"
 
                         text += f"темп-ра: {data['main']['temp']} гр.,\n"
                         text += f"min темп-ра: {data['main']['temp_min']}, "
