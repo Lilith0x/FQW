@@ -1,53 +1,51 @@
 import keyboard
-from PyQt5 import QtCore
+from PyQt5.QtCore import QThread, pyqtSignal
 
 
-class HotKeysSettingsThread(QtCore.QThread):
-    signal = QtCore.pyqtSignal(str)
+class HotKeysSettingsThread(QThread):
+    signal = pyqtSignal(str)
 
     def __init__(self):
         super(HotKeysSettingsThread, self).__init__()
         self.hotkey_button = None
+        self.hotkeys_button = None
 
     def set_hotkey_button(self, hotkey_button):
         self.hotkey_button = hotkey_button
+
+    def read_file_hotkeys(self, config):
+        self.hotkeys_button = [config['Hotkeys']['hotkey_1'], config['Hotkeys']['hotkey_2'],
+                               config['Hotkeys']['hotkey_3']]
+
+    def set_hotkeys_button(self, hotkeys):
+        self.hotkeys_button = hotkeys
 
     def run(self):
         hotkey = keyboard.read_hotkey(suppress=False)
         self.signal.emit(hotkey)
 
 
-class HotKeysThread(QtCore.QThread):
+class HotKeysThread(QThread):
 
-    def __init__(self, main_window, hotkeys):
+    def __init__(self, main_window):
         super(HotKeysThread, self).__init__()
         self.main_window = main_window
+        self.hotkeys = None
+
+    def set_hotkeys(self, hotkeys):
         self.hotkeys = hotkeys
 
-    def set_hotkey(self, hotkey, func):
-        if func == 0:
-            keyboard.add_hotkey(hotkey, self.main_window.start_voice_input)
-
-        elif func == 1:
-            keyboard.add_hotkey(hotkey, self.main_window.close_avatar)
-
-        elif func == 2:
-            keyboard.add_hotkey(hotkey, self.main_window.hide)
-
-    def remove_hotkey(self, hotkey):
-        keyboard.remove_hotkey(hotkey)
-        # print('12')
+    def remove_hotkeys(self, hotkeys):
+        keyboard.remove_hotkey(hotkeys[0])
+        keyboard.remove_hotkey(hotkeys[1])
+        keyboard.remove_hotkey(hotkeys[2])
 
     def run(self):
-        for i in range(len(self.hotkeys)):
-            if i == 0:
-                keyboard.add_hotkey(self.hotkeys[i], self.main_window.start_voice_input)
+        keyboard.add_hotkey(self.hotkeys[0], self.main_window.start_voice_input)
 
-            elif i == 1:
-                keyboard.add_hotkey(self.hotkeys[i], self.main_window.close_avatar)
+        keyboard.add_hotkey(self.hotkeys[1], self.main_window.show_close_win_hotkeys)
 
-            elif i == 2:
-                keyboard.add_hotkey(self.hotkeys[i], self.main_window.hide)
+        keyboard.add_hotkey(self.hotkeys[2], self.main_window.show_close_avatar_hotkeys)
 
-        # print(keyboard.)
-
+        # Попытка добавить для текстового ввода - Enter
+        # keyboard.add_hotkey('shift+enter', self.main_window.send)
