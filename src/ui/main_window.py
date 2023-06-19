@@ -1,28 +1,20 @@
 import time
-import easygui
-from fuzzywuzzy import fuzz
+from easygui import fileopenbox, diropenbox
 
-
-from src.functions.intent_classifier import IntentClassifier
-
-import set_config
-
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction, qApp, QDialogButtonBox, QMessageBox, QInputDialog
-from PyQt5 import QtGui, QtWidgets, QtCore
+from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction, qApp, QMessageBox, QInputDialog, QMainWindow, \
+    QDialogButtonBox, QApplication
+from PyQt5.QtCore import pyqtSlot
 
 from src.ui.clientui import Ui_MainWindow
 from src.functions.voice_input import VoiceInputThread
+from src.functions.intent_classifier import IntentClassifier
 from src.functions.voice_assistant import VoiceAssistantThread
-
+from src.functions.hotkeys import HotKeysSettingsThread, HotKeysThread
 from src.functions.functions_assistant import FunctionsAssistantThread
 
-from src.functions.hotkeys import HotKeysSettingsThread, HotKeysThread
-import set_config
 
-
-
-class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
+class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, settings_config):
         super().__init__()
         self.setupUi(self)
@@ -78,12 +70,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.nlu = IntentClassifier()
 
-
         # Приветствие
         # Закомменчено, чтобы приложение запускалось
-        # self.textBrowser.append(
-        #     f"{self.settings_config['VirtA']['VA_NAME']} (v{self.settings_config['VirtA']['VA_VER']}) начал свою работу ..." + "\n")
-        # self.start_speak_assistant(f"Здравствуйте! Меня зовут Виртаа")
+        self.textBrowser.append(
+            f"{self.settings_config['VirtA']['VA_NAME']} (v{self.settings_config['VirtA']['VA_VER']}) начал свою работу ..." + "\n")
+        self.start_speak_assistant(f"Здравствуйте! Меня зовут Виртаа")
 
         # Попытка добавить для текстового ввода - Enter
         # self.textEdit.installEventFilter(self)  # Для ввода Enter
@@ -100,18 +91,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.thread_hotkeys = HotKeysThread(self)
 
-
-        self.buttonBox.button(QtWidgets.QDialogButtonBox.Save).clicked.connect(self.save_hotkey)
+        self.buttonBox.button(QDialogButtonBox.Save).clicked.connect(self.save_hotkey)
 
         self.check_turn_hotkeys = int(self.settings_config['Hotkeys']['turn_on_off'])
         if self.check_turn_hotkeys == 0:
-            self.buttonBox.button(QtWidgets.QDialogButtonBox.Reset).setText("Включить клавиши")
+            self.buttonBox.button(QDialogButtonBox.Reset).setText("Включить клавиши")
 
         elif self.check_turn_hotkeys == 1:
-            self.buttonBox.button(QtWidgets.QDialogButtonBox.Reset).setText("Отключить клавиши")
+            self.buttonBox.button(QDialogButtonBox.Reset).setText("Отключить клавиши")
             self.start_hotkeys()
 
-        self.buttonBox.button(QtWidgets.QDialogButtonBox.Reset).clicked.connect(self.turn_hotkey)
+        self.buttonBox.button(QDialogButtonBox.Reset).clicked.connect(self.turn_hotkey)
 
         self.check_tray_hk = 1
         self.check_avatar_hk = 1
@@ -119,7 +109,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Подключение функционала самого помощника
         self.thread_functions = FunctionsAssistantThread()
         self.thread_functions.signal_result.connect(self.command_execution)
-
 
     # Попытка добавить для текстового ввода - Enter
     # def eventFilter(self, obj, event):
@@ -161,7 +150,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.check_turn_hotkeys == 1:
             self.start_hotkeys()
 
-
     def save_hotkey(self):
         if self.check_turn_hotkeys == 1:
             self.thread_hotkeys.remove_hotkeys(self.thread_hk_settings.hotkeys_button)
@@ -183,18 +171,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         with open("../data/config/settings.ini", 'w', encoding='utf-8') as configfile:
             self.settings_config.write(configfile)
 
-        # self.settings_config = ConfigParser()
         self.settings_config.read('../data/config/settings.ini', encoding='utf-8')
 
     def turn_hotkey(self):
         if self.check_turn_hotkeys == 0:
             self.start_hotkeys()
-            self.buttonBox.button(QtWidgets.QDialogButtonBox.Reset).setText("Отключить клавиши")
+            self.buttonBox.button(QDialogButtonBox.Reset).setText("Отключить клавиши")
             self.check_turn_hotkeys = 1
             # pass
         elif self.check_turn_hotkeys == 1:
             self.thread_hotkeys.remove_hotkeys(self.thread_hk_settings.hotkeys_button)
-            self.buttonBox.button(QtWidgets.QDialogButtonBox.Reset).setText("Включить клавиши")
+            self.buttonBox.button(QDialogButtonBox.Reset).setText("Включить клавиши")
             self.check_turn_hotkeys = 0
 
         self.settings_config["Hotkeys"]["turn_on_off"] = str(self.check_turn_hotkeys)
@@ -202,8 +189,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.settings_config.write(configfile)
 
         self.settings_config.read('../data/config/settings.ini', encoding='utf-8')
-
-
 
     def show_close_avatar_hotkeys(self):
         if self.check_avatar_hk == 1:
@@ -222,61 +207,56 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.check_tray_hk = 1
 
     def move_window(self):
-        screen = QtWidgets.QApplication.desktop().screenGeometry()
+        screen = QApplication.desktop().screenGeometry()
         widget = self.geometry()
         x = int((3 * screen.height()) / 100)
         y = int((screen.height() - widget.height()) - (1 * screen.width()) / 100)
         self.move(x, y)
 
     def one_avatar(self):
-        self.label_13.setPixmap(QtGui.QPixmap("../data/resours/head/4.png"))
+        self.label_13.setPixmap(QPixmap("../data/resours/head/4.png"))
         self.thread_voice_assistant.set_voice_assistant(1)
 
     def two_avatar(self):
-        self.label_13.setPixmap(QtGui.QPixmap("../data/resours/head/1.png"))
+        self.label_13.setPixmap(QPixmap("../data/resours/head/1.png"))
         self.thread_voice_assistant.set_voice_assistant(1)
 
     def three_avatar(self):
-        self.label_13.setPixmap(QtGui.QPixmap("../data/resours/head/3.png"))
+        self.label_13.setPixmap(QPixmap("../data/resours/head/3.png"))
         self.thread_voice_assistant.set_voice_assistant(0)
 
     def four_avatar(self):
-        self.label_13.setPixmap(QtGui.QPixmap("../data/resours/head/2.png"))
+        self.label_13.setPixmap(QPixmap("../data/resours/head/2.png"))
         self.thread_voice_assistant.set_voice_assistant(0)
 
     def close_avatar(self):
-        self.label_13.setPixmap(QtGui.QPixmap(""))
+        self.label_13.setPixmap(QPixmap(""))
 
     def on_min(self):
         self.showMinimized()
+
+    # def turn_off_button(self):
+    #     self.pushButton.setEnabled(False)
+    #     self.pushButton_2.setEnabled(False)
+    #
+    # def turn_on_button(self):
+    #     self.pushButton.setEnabled(True)
+    #     self.pushButton_2.setEnabled(True)
 
     # @pyqtSlot()
     def send(self):
         if self.check_turn_hotkeys == 1:
             self.thread_hotkeys.remove_hotkeys(self.thread_hk_settings.hotkeys_button)
         self.textBrowser.append("Ваша команда: " + self.textEdit.toPlainText())
-
-        # Здесь обработку -1
-        # self.va_respond(self.textEdit.toPlainText().lower())
         self.va_respond(str(self.textEdit.toPlainText()).lower())
-        #
-        # result = self.va_respond(str(self.textEdit.toPlainText()).lower())
-        # if result[0] == -1:
-        #     self.textBrowser.append(result[1])
-        #     self.start_speak_assistant(result[1])
-        # # elif result[0] == 1:
-        # self.command_execution(result)
 
         # удаление текста после отправки сообщения
         self.textEdit.clear()
-        # self.command_execution(result)
 
     def start_voice_input(self):
-
         if self.check_turn_hotkeys == 1:
             self.thread_hotkeys.remove_hotkeys(self.thread_hk_settings.hotkeys_button)
-        # if self.block_voice_input:
-        #     self.block_voice_input = False
+
         self.start_speak_assistant("Говоритее")
         self.thread_voice.handler_status = True
 
@@ -285,7 +265,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.thread_voice.start()
 
-    @QtCore.pyqtSlot(list)
+    @pyqtSlot(list)
     def signal_handler(self, voice_command):
 
         self.textBrowser.append("Ваша команда: " + voice_command[1])
@@ -293,50 +273,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Попытка оптимизации
         # self.thread_voice.stream.stop_stream()
+
         self.thread_voice.exit()
         if voice_command[0] == 1:
-            # Здесь обработку -1
-            # self.va_respond(self.textEdit.toPlainText().lower())
             self.va_respond(voice_command[1])
-            #
-            # result = self.va_respond(voice_command[1])
-            # #
-            # if result[0] == -1:
-            #     self.textBrowser.append(result[1])
-            #     self.start_speak_assistant(result[1])
-            # # # elif result[0] == 1:
-            #
-            # self.command_execution(result)
 
         elif voice_command[0] == -1:
             self.textBrowser.append(voice_command[1])
-        # self.block_voice_input = True
 
     def start_speak_assistant(self, text):
         self.thread_voice_assistant.set_text_say(text)
         self.thread_voice_assistant.start()
         self.thread_voice_assistant.exit()
 
-    @QtCore.pyqtSlot(list)
+    @pyqtSlot(list)
     def command_execution(self, result):
-        # if result[0] in [0, 3]:
-        #     self.start_speak_assistant(result[1])
-        #     self.textBrowser.append(result[1])
-        #
-        # # if result[1] == :
-        # #     self.start_speak_assistant(result[1])
-        #
-        # elif result[0] == 4:
-        #     self.start_speak_assistant('Открываю браузер')
-        #     # self.textBrowser.append(result[1])
-        #
-        # elif result[0] in [1, 2, 5]:
-        #     self.start_speak_assistant(result[1])
-        #     self.textBrowser.append(result[2])
-
-        # if result[0] == 1:
-        #     pass
-        print(result)
+        # print(result)
         if result[0] == -1:
             self.start_speak_assistant(result[1])
             self.textBrowser.append(result[1])
@@ -369,31 +321,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.textBrowser.append(result[2])
 
         self.textBrowser.append("-----------")
+        # self.turn_on_button()
         if self.check_turn_hotkeys == 1:
             self.start_hotkeys()
 
     def va_respond(self, command):
-
-        # if command.startswith(config.VA_ALIAS) or True:
-        # обращаются к ассистенту
-
         intent = self.nlu.clear_text(command)
         cmd = self.nlu.get_intent(intent)
-        # print(type(intent))
-        # cmd = self.nlu.VA_CMD_LIST.get(intent)
-
-        # cmd = self.recognize_cmd(self.filter_cmd(command))
-        # if cmd['cmd'] not in set_config.VA_CMD_LIST.keys():
-        #     return [-1, "Я не поняла вас"]
-        # else:
         return self.execute_cmd(cmd, command)
 
-        # else:
-        #     return [0, "Я не поняла вас"]
-        # stt.Speach.test = False
-
     def execute_cmd(self, choice, request):
-        print(choice)
+        # print(choice)
         choice = int(choice)
 
         if choice in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
@@ -415,7 +353,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 else:
                     QMessageBox.warning(self, "Ошибка", "Отмена операции")
 
-                # self.thread_functions.text_temp = None
             self.thread_functions.start()
 
         elif choice == 11:
@@ -423,7 +360,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.check_turn_hotkeys == 1:
                 self.start_hotkeys()
             self.textBrowser.append("-----------")
-
 
         elif choice == 12:
             self.start_speak_assistant(f"До свидания")
@@ -433,38 +369,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif choice == -1:
             self.textBrowser.append("Я не поняла вас")
             self.start_speak_assistant("Я не поняла вас")
+            # self.turn_on_button()
             if self.check_turn_hotkeys == 1:
                 self.start_hotkeys()
             self.textBrowser.append("-----------")
-
-        # return [0]
-
-    # def filter_cmd(self, raw_voice: str):
-    #     cmd = raw_voice
-    #
-    #     for x in set_config.VA_ALIAS:
-    #         cmd = cmd.replace(x, "").strip()
-    #
-    #     for x in set_config.VA_TBR:
-    #         cmd = cmd.replace(x, "").strip()
-    #     return cmd
-    #
-    # def recognize_cmd(self, cmd: str):
-    #     rc = {'cmd': '', 'percent': 70}
-    #     for c, v in set_config.VA_CMD_LIST.items():
-    #
-    #         for x in v:
-    #             vrt = fuzz.ratio(cmd, x)
-    #             # print(x + ' = ' + str(vrt))
-    #             if vrt > rc['percent']:
-    #                 # print('test' + x + ' = ' + str(vrt))
-    #                 rc['cmd'] = c
-    #                 rc['percent'] = vrt
-    #
-    #     if rc['percent'] <= 70:
-    #         rc['cmd'] = -1
-    #
-    #     return rc
 
     # Если окно свернуто и не в фокусе
     def show_focus_window(self):
@@ -472,25 +380,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.activateWindow()
 
     def add_file(self):
-        choice_dir = easygui.fileopenbox()
+        choice_dir = fileopenbox()
 
         if choice_dir != None:
             text, ok = QInputDialog.getText(self, 'Ввод команды',
                                             'Введите команду для открытия файла:')
 
             if ok and text:
-                # self.path[text] = f'{choice_dir}'
-
                 self.settings_config["PathFile"][text.lower()] = choice_dir
                 with open("../data/config/settings.ini", 'w', encoding='utf-8') as configfile:
                     self.settings_config.write(configfile)
-
-                # self.count += 1
-                # text = str(text).lower()
-                # self.table.setRowCount(self.count)
-                # self.table.setItem(self.count - 1, 0, QTableWidgetItem(f"{text}"))
-                # self.table.setItem(self.count - 1, 1, QTableWidgetItem(f"{choice_dir}"))
-
 
                 QMessageBox.about(self, "Успешно", "Файл успешно добавлен в быстрый доступ.")
             else:
@@ -499,23 +398,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             QMessageBox.warning(self, "Ошибка", "Вы не выбрали файл")
 
     def add_dir(self):
-        choice_dir = easygui.diropenbox()
+        choice_dir = diropenbox()
 
         if choice_dir != None:
             text, ok = QInputDialog.getText(self, 'Ввод команды',
                                             'Введите команду для открытия папки:')
 
             if ok and text:
-                # self.path[text] = f'{choice_dir}'
-
                 self.settings_config["PathDirectory"][text.lower()] = choice_dir
                 with open("../data/config/settings.ini", 'w', encoding='utf-8') as configfile:
                     self.settings_config.write(configfile)
-                # self.count += 1
-                # text = str(text).lower()
-                # self.table.setRowCount(self.count)
-                # self.table.setItem(self.count - 1, 0, QTableWidgetItem(f"{text}"))
-                # self.table.setItem(self.count - 1, 1, QTableWidgetItem(f"{choice_dir}"))
+
                 QMessageBox.about(self, "Успешно", "Папка успешно добавлена в быстрый доступ.")
             else:
                 QMessageBox.warning(self, "Ошибка", "Отмена операции")
@@ -524,7 +417,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def add_site(self):
         text, ok = QInputDialog.getText(self, 'Ввод сайта',
-        'Введите адрес сайта, который хотите добавить в быстрый доступ:')
+                                        'Введите адрес сайта, который хотите добавить в быстрый доступ:')
 
         if ok and text:
             site = text
@@ -543,9 +436,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         else:
             QMessageBox.warning(self, "Ошибка", "Отмена операции")
+
+
 # if __name__ == "__main__":
 #     app = QtWidgets.QApplication([])
 #     window = MainWindow()
 #     window.show()
 #     app.exec_()
-

@@ -9,7 +9,6 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
 
 
 class Ui_MainWindow(object):
@@ -50,10 +49,10 @@ class Ui_MainWindow(object):
 "")
 
         # Натройка визуала самого окна, прозрачноть и т д
-        self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
-        self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setAttribute(Qt.WA_NoSystemBackground, True)
-        self.setAttribute(Qt.WA_TranslucentBackground, True)
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setAttribute(QtCore.Qt.WA_NoSystemBackground, True)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground, True)
 
         self.centralwidget.setInputMethodHints(QtCore.Qt.ImhNone)
         self.centralwidget.setObjectName("centralwidget")

@@ -1,9 +1,9 @@
 import keyboard
-from PyQt5 import QtCore
+from PyQt5.QtCore import QThread, pyqtSignal
 
 
-class HotKeysSettingsThread(QtCore.QThread):
-    signal = QtCore.pyqtSignal(str)
+class HotKeysSettingsThread(QThread):
+    signal = pyqtSignal(str)
 
     def __init__(self):
         super(HotKeysSettingsThread, self).__init__()
@@ -25,7 +25,7 @@ class HotKeysSettingsThread(QtCore.QThread):
         self.signal.emit(hotkey)
 
 
-class HotKeysThread(QtCore.QThread):
+class HotKeysThread(QThread):
 
     def __init__(self, main_window):
         super(HotKeysThread, self).__init__()

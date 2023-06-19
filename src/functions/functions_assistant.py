@@ -1,20 +1,15 @@
-import json
-import os
-import pickle
-import re
-import webbrowser
-from configparser import ConfigParser
-
+from json import loads
+from os import startfile
+from webbrowser import open
 import requests
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QInputDialog
+from PyQt5.QtCore import QThread, pyqtSignal
 from num2words import num2words
 from datetime import datetime
-import platform
+from platform import uname
 
 
-class FunctionsAssistantThread(QtCore.QThread):
-    signal_result = QtCore.pyqtSignal(list)
+class FunctionsAssistantThread(QThread):
+    signal_result = pyqtSignal(list)
     choice_funct = None
     text_temp = None
     data_file = None
@@ -56,11 +51,7 @@ class FunctionsAssistantThread(QtCore.QThread):
             self.write_file_text(self.text_temp)
 
     def setting(self):
-        # добавлять папку, сайт или файл
-        # если успею сделать имя пользователя и имя вирты - но на крайний случай,
-        # так как это не используется в самом приложении
         self.signal_result.emit([0])
-        pass
 
     def say_help(self):
         text = "Я умею: ..."
@@ -86,19 +77,17 @@ class FunctionsAssistantThread(QtCore.QThread):
     def say_time(self):
         now = datetime.now()
         text_say = "Сейчас " + num2words(now.hour, lang='ru') + " " + num2words(now.minute, lang="ru")
-        # print(text)
         text = "Сегодня: " + f'{now.day}-{now.month}-{now.year} {now.hour}:{now.minute}'
         self.signal_result.emit([2, text_say, str(text)])
 
     def open_browser(self):
         url = "https://ya.ru/"
-        # url = "https://about:blank"
-        webbrowser.open(url)
-        self.signal_result.emit([3, "Выполняю", "Выполняю"])
+        open(url)
+        self.signal_result.emit([3, "Выполняю", "Открываю браузер"])
 
     def say_system(self):
         text_say = "Вывожу информацию о вашей системе"
-        sys = platform.uname()
+        sys = uname()
         text = "Информация о системе:\n" \
                f"    Имя системы/OS - {sys[0]}\n" \
                f"    Сетевое имя компьютера - {sys[1]}\n" \
@@ -113,9 +102,7 @@ class FunctionsAssistantThread(QtCore.QThread):
         try:
             send_url = "http://api.ipstack.com/check?access_key=c024957c288f813bf6f290a7182aa3d7"
             geo_req = requests.get(send_url)
-            geo_json = json.loads(geo_req.text)
-            # print(geo_json)
-            # text = None
+            geo_json = loads(geo_req.text)
             if choi == 0:
                 # Тут
                 # text_say = "Ваше примерное местоположение:"
@@ -126,7 +113,7 @@ class FunctionsAssistantThread(QtCore.QThread):
                 else:
                     text = f"{geo_json[0]}"
 
-                self.signal_result.emit([5, "Выполняю", text])
+                self.signal_result.emit([5, "Вывожу ваше расположение", text])
 
             elif choi == 1:
                 city_id = geo_json["location"]["geoname_id"]
@@ -140,7 +127,10 @@ class FunctionsAssistantThread(QtCore.QThread):
                     if 'name' in data:
 
                         text = text_say
-                        text += f" {data['weather'][0]['description']},\n"
+                        text += f": {data['weather'][0]['description']},\n"
+
+                        text_say += f" {data['weather'][0]['description']}"
+
                         text += f"темп-ра: {data['main']['temp']} гр.,\n"
                         text += f"min темп-ра: {data['main']['temp_min']}, "
                         text += f"max темп-ра: {data['main']['temp_max']}"
@@ -168,9 +158,9 @@ class FunctionsAssistantThread(QtCore.QThread):
         if choi == 0:
             for i in data_file["PathFile"]:
                 if i in open_thing:
-                    os.startfile(data_file['PathFile'][i])
+                    startfile(data_file['PathFile'][i])
                     check = 1
-                    self.signal_result.emit([7, "Выполняю", "Выполняю"])
+                    self.signal_result.emit([7, "Выполняю", "Открываю файл"])
 
             if check == 0:
                 self.signal_result.emit([-1, "Я не знаю такого файла"])
@@ -178,9 +168,9 @@ class FunctionsAssistantThread(QtCore.QThread):
         elif choi == 1:
             for i in data_file["PathDirectory"]:
                 if i in open_thing:
-                    os.startfile(data_file['PathDirectory'][i])
+                    startfile(data_file['PathDirectory'][i])
                     check = 1
-                    self.signal_result.emit([8, "Выполняю", "Выполняю"])
+                    self.signal_result.emit([8, "Выполняю", "Открываю папку"])
 
             if check == 0:
                 self.signal_result.emit([-1, "Я не знаю такой папки"])
@@ -188,25 +178,14 @@ class FunctionsAssistantThread(QtCore.QThread):
         elif choi == 2:
             for i in data_file['Site']:
                 if i in open_thing:
-                    webbrowser.open(data_file['Site'][i])
+                    open(data_file['Site'][i])
                     check = 1
-                    self.signal_result.emit([9, "Выполняю", "Выполняю"])
+                    self.signal_result.emit([9, "Выполняю", "Открываю сайт"])
 
             if check == 0:
                 self.signal_result.emit([-1, "Я не знаю такого сайта"])
 
-            # with open("Pickle/site_base.pickle", "rb") as f:
-            #     data_site = pickle.load(f)
-            #
-            # for key in data_site:
-            #     key = r"\b" + f"{key}" + r"\b"
-            #     key = re.search(key, ans)
-            #     if key:
-            #         self.textEdit.setText(f"- Открываю {key[0]} в браузере.")
-            #         webbrowser.get(brow).open(key[0])
-            #         return 0
-            #
-            # self.textEdit.setText("- Я не знаю такого сайта")
+
 
     def write_file_text(self, text):
         if text:
@@ -222,7 +201,7 @@ class FunctionsAssistantThread(QtCore.QThread):
             with open("Заметки от VirtA.txt", "a", encoding="utf-8") as file:
                 file.write(data_write_text)
 
-        self.signal_result.emit([10, 'Выполняю', "Выполняю"])
+        self.signal_result.emit([10, 'Выполняю', "Записываю"])
 
 
 # test = FunctionsAssistantThread()

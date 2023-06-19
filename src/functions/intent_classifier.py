@@ -1,31 +1,14 @@
 import pickle
 import numpy as np
+from re import sub
 
 from tensorflow.python.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-
-import nltk
-import re
+from nltk import word_tokenize
 from nltk.corpus import stopwords
 
 
 class IntentClassifier:
-    VA_CMD_LIST = {
-        11: 'привет',
-        12: 'пока',
-        7: 'открытие файла/приложения',
-        2: 'время',
-        6: 'открытие браузера',
-        1: 'функционал',
-        4: 'информация о системе',
-        5: 'местоположение',
-        6: 'погода',
-        9: 'открытие сайта',
-        8: 'открытие папки',
-        10: 'заметки',
-        0: 'изменение параметров',
-    }
-
     def __init__(self):
         self.classes = pickle.load(open('../models/intent_classifier/classes_CNN.pkl', 'rb'))
         self.tokenizer = pickle.load(open('../models/intent_classifier/tokenizer_CNN.pkl', 'rb'))
@@ -50,10 +33,10 @@ class IntentClassifier:
 
     def clear_text(self,text: str):
         text = text.lower()
-        text = re.sub(r'[^а-яА-ЯёЁ ]', ' ', text)
+        text = sub(r'[^а-яА-ЯёЁ ]', ' ', text)
         text = ' '.join(text.split())
 
-        word_tokens = nltk.word_tokenize(text)
+        word_tokens = word_tokenize(text)
         stop_words = set(stopwords.words("russian"))
 
         new_stop_words = ['пожалуйста', 'вирта']
