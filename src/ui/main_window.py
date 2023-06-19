@@ -326,6 +326,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.start_hotkeys()
 
     def va_respond(self, command):
+
+        command = command[0:28]
+
         intent = self.nlu.clear_text(command)
         cmd = self.nlu.get_intent(intent)
         return self.execute_cmd(cmd, command)
